@@ -36,6 +36,10 @@ public class Interval {
         }
     }
     
+    /**
+     * 
+     * @param interval 
+     */
     public Interval(Interval interval){
         this.inf = interval.inf;
         this.sup = interval.sup;
