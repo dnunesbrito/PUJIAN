@@ -6,7 +6,7 @@
 package br.edu.ufop;
 
 /**
- * Class used to define the encapsuled type Interval. This type
+ * Class used to define the Interval type. This type
  * is used to make basic operations with interval.
  * 
  * @author Darlan Nunes de Brito
@@ -16,12 +16,16 @@ public class Interval {
     private double inf;
     private double sup;
 
+    /**
+     * Empty class constructor
+     */
     public Interval() {
     }
     
     
     /**
-     * Class constructor
+     * Class constructor with interval limits
+     * 
      * @param inf Interval inferior limit
      * @param sup Interval superior limit
      */
@@ -37,7 +41,7 @@ public class Interval {
     }
     
     /**
-     * 
+     * Class constructor with an interval object
      * @param interval 
      */
     public Interval(Interval interval){
@@ -45,11 +49,21 @@ public class Interval {
         this.sup = interval.sup;
     }
     
+    /**
+     * Class constructor to a degenarated interval
+     * 
+     * @param degenarated Value of the degenarated interval
+     */
     public Interval(double degenarated){
         this.inf = degenarated;
         this.sup = degenarated;
     }
     
+    /**
+     * Sum this class with an interval
+     * @param A Interval to make sumation
+     * @return Interval result
+     */
     public Interval add(Interval A){
         Interval sum = new Interval();
         sum.inf = this.inf + A.inf;
