@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.edu.ufop;
+package br.edu.ufop.jprofil;
+
+import java.util.HashMap;
 
 /**
  * Class used to define the Interval type. This type
@@ -15,7 +17,13 @@ package br.edu.ufop;
 public class Interval {
     private double inf;
     private double sup;
+    
+    private static HashMap<String, Interval> variables = new HashMap<>();
 
+    public static Interval eval(String op){
+        Interval A = variables.get(op);
+        return A;
+    }
     /**
      * Empty class constructor
      */
@@ -42,6 +50,7 @@ public class Interval {
     
     /**
      * Class constructor with an interval object
+     * 
      * @param interval 
      */
     public Interval(Interval interval){
@@ -54,13 +63,15 @@ public class Interval {
      * 
      * @param degenarated Value of the degenarated interval
      */
-    public Interval(double degenarated){
+    public Interval(double degenarated, String name){
         this.inf = degenarated;
         this.sup = degenarated;
+        variables.put(name, this);
     }
     
     /**
      * Sum this class with an interval
+     * 
      * @param A Interval to make sumation
      * @return Interval result
      */
@@ -76,5 +87,14 @@ public class Interval {
             sum.sup = tmp;
         }
         return sum;
+    }
+    
+    public void getVariables(){
+        variables.keySet().stream().map((key) -> {
+            System.out.println(key);
+            return key;
+        }).forEachOrdered((key) -> {
+            System.out.println(variables.get(key));
+        });
     }
 }
