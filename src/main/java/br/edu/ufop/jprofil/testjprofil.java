@@ -13,8 +13,17 @@ package br.edu.ufop.jprofil;
  */
 public class testjprofil {
     public static void main(String[] args) {
-        Interval A = new Interval(2.0,"A");
-        Interval B = new Interval(3.0,"B");
-        
+        Interval A = new Interval(1.0,2.0,"A");
+        Interval B = new Interval(1.0,3.0,"B");
+        Interval.eval("+");
+        Interval.printInstances();
+        String str = "A+(2*B/(4+2)*(3*8))";
+        // Function call 
+        try{
+            Interval.getBracketsIndexes(str);
+            System.out.println("Balanced "); 
+        } catch (ArithmeticException e){
+            System.out.println("Not Balanced ");
+        }
     }
 }
