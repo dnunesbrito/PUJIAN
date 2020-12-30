@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package br.edu.ufop.jprofil;
 
@@ -9,21 +20,36 @@ import java.util.*;
 
 /**
  * Class used to define the Interval type. This type
- * is used to make basic operations with interval.
+ * is used to make basic operations with intervals.
  * 
  * 
  * @author Darlan Nunes de Brito
  * @author Jônata Lucas Nogueira
  */
 public class Interval {
-    private double inf;
-    private double sup;
+    /**
+     * Public member to inferior limit of the interval
+     */
+    public double inf;
+    
+    /**
+     * Public member to inferior limit of the interval
+     */
+    public double sup;
+
+    
     /**
      * Stores instance names and his values.
      */
     private static HashMap<String, Interval> variables = new HashMap<>();
 
-
+    /**
+     * Function to initialize variables names.
+     * @param varName Instance name
+     */
+    private void init(String varName) {
+        variables.put(varName+this.toString(), this);
+    }
     /**
      * Empty class constructor
      */
@@ -47,7 +73,7 @@ public class Interval {
             this.inf = sup;
             this.sup = inf;
         }
-        variables.put(varName+this.toString(), this);
+        init(varName);
     }
     
     /**
@@ -59,7 +85,7 @@ public class Interval {
     public Interval(Interval interval,String newName){
         this.inf = interval.inf;
         this.sup = interval.sup;
-        variables.put(newName, this);
+        init(newName);
     }
     
     /**
@@ -71,7 +97,7 @@ public class Interval {
     public Interval(double degenarated, String varName){
         this.inf = degenarated;
         this.sup = degenarated;
-        variables.put(varName, this);
+        init(varName);
     }
     
     /**
@@ -93,7 +119,7 @@ public class Interval {
     }
 
     /**
-     * Sum this class with an interval
+     * Sum two intervals
      * 
      * @param A Interval to make sumation
      * @return Interval result

@@ -6,8 +6,6 @@
        
 package br.edu.ufop.jprofil;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 
 /**
  *
