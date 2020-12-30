@@ -18,7 +18,9 @@ import java.util.*;
 public class Interval {
     private double inf;
     private double sup;
-    
+    /**
+     * Stores instance names and his values.
+     */
     private static HashMap<String, Interval> variables = new HashMap<>();
 
 
@@ -80,6 +82,13 @@ public class Interval {
      */
     public static Interval eval(String expr){
         Interval A = new Interval();
+        Deque<Pair> idxs = new ArrayDeque<>();
+        idxs = Interval.getBracketsIndexes(expr);
+        if(!idxs.isEmpty())
+            for(Pair idx : idxs){
+                System.out.println(idx);
+            }
+        
         return A;
     }
 
@@ -127,67 +136,40 @@ public class Interval {
         Deque<Character> stackOpen 
             = new ArrayDeque<>(); 
 
-        Deque<Character> stackClose 
-            = new ArrayDeque<>(); 
-
         Deque<Pair> stackIdx = new ArrayDeque<>();
         Deque<Pair> stackFinalIdx = new ArrayDeque<>();
 
+        CharSequence openBracket = ")";
+        CharSequence closeBracket = "(";
+        if(expr.contains(openBracket) && !expr.contains(closeBracket)){
+            throw new ArithmeticException("Unbalaced brackets");
+        }else if(!expr.contains(openBracket) && expr.contains(closeBracket)){
+            throw new ArithmeticException("Unbalaced brackets");
+        }
+        
         // Traversing the Expression 
         for (int i = 0; i < expr.length(); i++)  
         { 
             char x = expr.charAt(i); 
   
-            if (x == '(' || x == '[' || x == '{')  
+            if (x == '(')  
             { 
                 // Push the element in the stackOpen 
                 stackOpen.push(x);
                 stackIdx.push(Pair.push(i, Integer.MAX_VALUE));
                 continue; 
-            } 
-            if (x == ')' || x == ']' || x == '}')  
-            { 
-                // Push the element in the stackOpen 
-                stackClose.push(x); 
-            } 
-  
-            // IF current current character is not opening 
-            // bracket, then it must be closing. So stackOpen 
-            // cannot be empty at this point. 
-            if (stackOpen.isEmpty()) 
-                continue; 
-            char check; 
-            switch (x) { 
-            case ')':
-                check = stackOpen.pop();
-                stackClose.pop();
+            }
+
+            if (x == ')') {
+                //Check if there are opened brackets
+                if(stackOpen.isEmpty())
+                    throw new ArithmeticException("Unbalaced brackets");
+                stackOpen.pop();
                 Pair pair = stackIdx.pop();
                 pair.end = i;
-                stackFinalIdx.push(pair);
-                
-                if (check == '{' || check == '[') 
-                    throw new ArithmeticException("Unbalaced brackets");
-                break; 
-  
-            case '}': 
-                check = stackOpen.pop();
-                stackClose.pop();
-                if (check == '(' || check == '[') 
-                    throw new ArithmeticException("Unbalaced brackets");
-                break; 
-  
-            case ']':
-                stackClose.pop();
-                check = stackOpen.pop(); 
-                if (check == '(' || check == '{') 
-                    throw new ArithmeticException("Unbalaced brackets"); 
-                break; 
+                stackFinalIdx.push(pair);                
             } 
         } 
-  
-        // Check Empty Stack 
-        if(!(stackOpen.isEmpty() && stackClose.isEmpty()))
-            throw new ArithmeticException("Unbalaced brackets");
         return stackFinalIdx;
     } 
 

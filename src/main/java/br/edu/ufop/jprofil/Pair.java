@@ -25,4 +25,8 @@ public class Pair {
         return tmp;
     }
 
+    @Override
+    public String toString(){
+        return "[" + this.start + "," + this.end + "]";
+    }
 }

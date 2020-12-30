@@ -6,6 +6,9 @@
        
 package br.edu.ufop.jprofil;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 /**
  *
  * @author Darlan Nunes de Brito
@@ -18,9 +21,9 @@ public class testjprofil {
         Interval.eval("+");
         Interval.printInstances();
         String str = "A+(2*B/(4+2)*(3*8))";
-        // Function call 
+        
         try{
-            Interval.getBracketsIndexes(str);
+            Interval.eval(str);
             System.out.println("Balanced "); 
         } catch (ArithmeticException e){
             System.out.println("Not Balanced ");
