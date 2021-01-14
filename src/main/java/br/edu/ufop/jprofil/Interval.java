@@ -80,6 +80,57 @@ public class Interval extends Engine{
     }
 
     /**
+     * Unary positive operation in this interval
+     * 
+     * @return Interval result
+     */
+    public Interval uniAdd(){
+        Interval uniAdd = new Interval();
+        uniAdd.inf = this.inf;
+        uniAdd.sup = this.sup;
+        
+        return uniAdd;
+    }
+    
+    /**
+     * Unary negative operation in this interval
+     * 
+     * @return Interval result
+     */
+    public Interval uniSub(){
+        Interval uniSub = new Interval();
+        uniSub.inf = -this.sup;
+        uniSub.sup = -this.inf;
+        
+        return uniSub;
+    }
+    
+    /**
+     * Increment this interval by one
+     * 
+     * @return Interval result
+     */
+    public Interval increment(){
+        Interval increment;
+        Interval degenerated = new Interval(1);
+        
+        increment = this.add(degenerated);
+        return increment;
+    }
+    /**
+     * Decrement this interval by one
+     * 
+     * @return Interval result
+     */
+    public Interval decrement(){
+        Interval decrement;
+        Interval degenerated = new Interval(1);
+        
+        decrement = this.sub(degenerated);
+        return decrement;
+    }
+
+    /**
      * Sum two intervals
      * 
      * @param A Interval to make sumation
@@ -98,5 +149,148 @@ public class Interval extends Engine{
         }
         return sum;
     }
-
+    
+    /**
+     * Subtract two intervals
+     * 
+     * @param A Interval to make subtraction
+     * @return Interval result
+     */
+    public Interval sub(Interval A){
+        Interval sub = new Interval(A);
+        sub.inf = this.inf - A.sup;
+        sub.sup = this.sup - A.inf;
+        
+        if(sub.inf > sub.sup){
+            double tmp;
+            tmp = sub.inf;
+            sub.inf = sub.sup;
+            sub.sup = tmp;
+        }
+        return sub;
+    } 
+    
+    /**
+     * Multiplies two intervals
+     * 
+     * @param A Interval to make multiplication
+     * @return Interval result
+     */
+    public Interval mult(Interval A){
+        double result[] = new double[4];
+        result[0] = this.inf * A.inf;
+        result[1] = this.inf * A.sup;
+        result[2] = this.sup * A.inf;
+        result[3] = this.sup * A.sup;
+        
+        Interval mult = new Interval();
+        
+        mult.inf = result[0];
+        mult.sup = result[0];
+        
+        for (int i = 1; i < 4; i++) {
+            if (result[i] < mult.inf) {
+                mult.inf = result[i];
+            } else if (result[i] > mult.sup){
+                mult.sup = result[i];
+            }
+        }
+        return mult;
+    }
+    
+    /**
+     * Potentiates an interval
+     * 
+     * @param power Double number to make the exponentiation 
+     * @return Interval result
+     */
+    public Interval pow(double power){
+        Interval pow = new Interval();
+        pow.inf = Math.pow(this.inf, power);
+        pow.sup = Math.pow(this.sup, power);
+        
+        return pow;
+    }
+    
+    /**
+     * Comparison if this interval is equals than interval A
+     * 
+     * @param A Interval to make the comparison if equals
+     * @return 1.0 if this interval is equal than interval A and 0.0 if false
+     */
+    public double equals(Interval A){
+        if(this.inf == A.inf && this.sup == A.sup)
+            return 1.0;
+        else
+            return 0.0;
+    }
+    
+    /**
+     * Comparison if this interval is different than interval A
+     * 
+     * @param A Interval to make the comparison if different
+     * @return 1.0 if this interval is different than interval A and 0.0 if 
+     * false
+     */
+    public double differ(Interval A){
+        if(this.inf != A.inf && this.sup != A.sup)
+            return 1.0;
+        else
+            return 0.0;
+    }
+    
+    /**
+     * Comparison if this interval is smaller than interval A
+     * 
+     * @param A Interval to make the comparison if smaller
+     * @return 1.0 if this interval is smaller than interval A and 0.0 if false
+     */
+    public double smaller(Interval A){
+        if(this.sup < A.inf)
+            return 1.0;
+        else
+            return 0.0;
+    }
+    
+    /**
+     * Comparison if this interval is smaller equals than interval A
+     * 
+     * @param A Interval to make the comparison if smaller equals
+     * @return 1.0 if this interval is smaller equals than interval A and 0.0
+     * if false
+     */
+    public double smallerEquals(Interval A){
+        if(this.sup <= A.inf)
+            return 1.0;
+        else
+            return 0.0;
+    }
+    
+    /**
+     * Comparison if this interval is greater than interval A
+     * 
+     * @param A Interval to make the comparison if greater
+     * @return 1.0 if this interval is greater than interval A and 0.0 if false
+     */
+    public double greater(Interval A){
+        if(this.inf > A.sup)
+            return 1.0;
+        else
+            return 0.0;
+    }
+    
+    /**
+     * Comparison if this interval is greater equals than interval A
+     * 
+     * @param A Interval to make the comparison if greater equals
+     * @return 1.0 if this interval is greater equals than interval A and 0.0
+     * if false
+     */
+    public double greaterEquals(Interval A){
+        if(this.inf >= A.sup)
+            return 1.0;
+        else
+            return 0.0;
+    }
+    
 }
