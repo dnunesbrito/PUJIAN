@@ -73,9 +73,8 @@ public class Interval extends Engine{
      * Class constructor to a degenarated interval
      * 
      * @param degenarated Value of the degenarated interval
-     * @param varName String with instance name
      */
-    public Interval(double degenarated, String varName){
+    public Interval(double degenarated){
         this.inf = degenarated;
         this.sup = degenarated;
     }

@@ -154,18 +154,45 @@ public class Engine {
      * Class to contain a real number
      */
     public class Num extends Node {
+        
+        /**
+         * Real value of the Num instance
+         */
         double val;
 
+        /**
+         * Class constructor
+         * 
+         * @param val Value of the Num instance
+         */
         public Num(double val) {
             super();
             this.val = val;
         }
 
+        /**
+         * Returns a string with the method value
+         * 
+         * @return String with method value
+         */
         @Override
         public String toString() {
             return Double.toString(val);
         }
 
+        /**
+         * Make a unary operation with one real number in an instance of Num
+         * 
+         * @param op String with operator that can be: <ul>
+         * <li> + Positive unary </li>
+         * <li> - Negative unary </li>
+         * <li> ++ Increment </li>
+         * <li> -- Decrement </li>
+         * <li> ! Factorial </li>
+         * </ul>
+         * @return
+         * @throws SemanticError 
+         */
         @Override
         public Node doUnaryOp(String op) throws SemanticError {
             if ("-".equals(op))
@@ -186,6 +213,28 @@ public class Engine {
             return super.doUnaryOp(op);
         }
 
+        /**
+         * Make a unary operation with one real number in an instance of Num
+         * 
+         * @param op String with operator that can be: <ul>
+         * <li> + Add two real numbers </li>
+         * <li> - Subtract two real numbers </li>
+         * <li> * Multiply two real numbers </li>
+         * <li> / Divide two real numbers </li>
+         * <li> % Modulo of two real numbers </li>
+         * <li> ^ Power of two real numbers </li>
+         * <li> == Test if two real numbers are equals </li>
+         * <li> != Test if two real numbers are different </li>
+         * <li> &lt;= Less than or equals </li>
+         * <li> &lt; Lower than </li>
+         * <li> &gt;= Greater than or equals </li>
+         * <li> &gt; Greater than </li>
+         * 
+         * </ul>
+         * @param other The {@link Engine.Node} with right operand
+         * @return A {@link Engine.Node} with the operation results
+         * @throws SemanticError 
+         */
         @Override
         public Node doBinOp(String op, Node other) throws SemanticError {
             Num that = (Num) other;
@@ -216,6 +265,11 @@ public class Engine {
             return super.doBinOp(op, other);
         }
 
+        /**
+         * Return True if value is different from zero
+         * 
+         * @return True if value is different from zero
+         */
         @Override
         public boolean isTrue() {
             return this.val != 0;
@@ -227,20 +281,49 @@ public class Engine {
     public class Inter extends Node{
         Interval val;
         
+        /**
+         * Class constructor
+         * 
+         * @param val An {@link Interval}
+         */
         public Inter(Interval val) {
             super();
             this.val = val;
         }
         
+        /**
+         * Class constructor 
+         * 
+         * @param inf Inferior value of the interval
+         * @param sup Superio value of the interval
+         */
         public Inter(double inf, double sup){
             super();
             val = new Interval(inf,sup);
         }
         
+        /**
+         * Returns a String with inferior and superior interval
+         * @return String with inferior and superior interval
+         */
         @Override
         public String toString(){
             return "[" + val.inf + "," + val.sup + "]";
         }
+
+        /**
+         * Make a unary operation with one real number in an instance of Num
+         * 
+         * @param op String with operator that can be: <ul>
+         * <li> + Positive unary </li>
+         * <li> - Negative unary </li>
+         * <li> ++ Increment </li>
+         * <li> -- Decrement </li>
+         * <li> ! Factorial </li>
+         * </ul>
+         * @return
+         * @throws SemanticError 
+         */
         @Override
         public Node doUnaryOp(String op) throws SemanticError {
             if ("=".equals(op))
@@ -248,6 +331,28 @@ public class Engine {
             return super.doUnaryOp(op);
         }
         
+        /**
+         * Make a unary operation with one real number in an instance of Num
+         * 
+         * @param op String with operator that can be: <ul>
+         * <li> + Add two {@link Interval} </li>
+         * <li> - Subtract two {@link Interval} </li>
+         * <li> * Multiply two {@link Interval} </li>
+         * <li> / Divide two {@link Interval} </li>
+         * <li> % Modulo of two {@link Interval} </li>
+         * <li> ^ Power of two {@link Interval} </li>
+         * <li> == Test if two {@link Interval} are equals </li>
+         * <li> != Test if two {@link Interval} are different </li>
+         * <li> &lt;= Less than or equals </li>
+         * <li> &lt; Lower than </li>
+         * <li> &gt;= Greater than or equals </li>
+         * <li> &gt; Greater than </li>
+         * 
+         * </ul>
+         * @param other The {@link Engine.Node} with right operand
+         * @return A {@link Engine.Node} with the operation results
+         * @throws SemanticError 
+         */
         @Override
         public Node doBinOp(String op, Node other) throws SemanticError {
             Inter that = (Inter) other;
@@ -257,33 +362,66 @@ public class Engine {
         }
 
     }
-                
+
+    /**
+     * A class to creates a Node with one literal and an unary operand
+     */
     public class UnaryOp extends Node {
+        /**
+         * Operator
+         */
         String op;
+        
+        /**
+         * Operand
+         */
         Node operand;
 
+        /**
+         * Class constructor. Set the operator and operand
+         * @param op Operator
+         * @param operand Operand
+         */
         public UnaryOp(String op, Node operand) {
             super();
             this.op = op;
             this.operand = operand;
         }
 
+        /**
+         * 
+         * @return A string with operator and operand inbetween parenthesis
+         */
         @Override
         public String toString() {
             return "(" + op + " " + operand.toString() + ")";
         }
 
+        /**
+         * 
+         * @return A {@link Engine.Node} with the result value
+         * @throws SemanticError 
+         */
         @Override
         public Node eval() throws SemanticError {
             return operand.eval().doUnaryOp(op);
         }
     }
-
+    
+    /**
+     * A class to creates a Node with two literals and an binary operand
+     */
     public class BinOp extends Node {
         String op;
         Node left;
         Node right;
 
+        /**
+         * Class constructor. Set the operator and operands
+         * @param op Operator
+         * @param left Operand
+         * @param right Operand
+         */
         public BinOp(String op, Node left, Node right) {
             super();
             this.op = op;
@@ -291,13 +429,17 @@ public class Engine {
             this.right = right;
         }
 
+        /**
+         * 
+         * @return A string with operator and operand inbetween parenthesis
+         */
         @Override
         public String toString() {
             return "(" + left.toString() + op + right.toString() + ")";
         }
         /**
          * If operator is "equal", set the contex list with the value creating a Sym and context.
-         * If not get the left operator from context list.
+         * If not get the left operator from context list and make the operation
          * @return Value of operation on a Node.
          * @throws SemanticError 
          */
@@ -310,7 +452,7 @@ public class Engine {
     }
 
     // ***** Functions *****
-
+    // Not used yet than not documented
     public class Branch extends Node {
         // if head then body else tail
         Node head;
@@ -338,19 +480,38 @@ public class Engine {
         }
     }
 
+    /**
+     * Stores a symbolic variable. Symbolic varible is only a name.
+     */
     public class Sym extends Node {
-        String val;
+        /**
+         * String with variable name
+         */
+        String varName;
 
-        public Sym(String val) {
+        /**
+         * Creates a symbolic variable with the name in parameter
+         * @param varName Variable name 
+         */
+        public Sym(String varName) {
             super();
-            this.val = val;
+            this.varName = varName;
         }
 
+        /**
+         * Return the variable name
+         * @return 
+         */
         @Override
         public String toString() {
-            return val;
+            return varName;
         }
 
+        /**
+         * 
+         * @return The {@link Engine.Node} with the numeric value of the varName variable
+         * @throws SemanticError 
+         */
         @Override
         public Node eval() throws SemanticError {
             Node val = context.get(this);
@@ -360,7 +521,7 @@ public class Engine {
         }
 
         /**
-         * Create a context entry if the operator is equal if not call the super 
+         * Create a context entry when the operator is equal if not call the super 
          * BinOp. This super must be implemented by specific class, i. e. Num class.
          * 
          * @param op String with operation
@@ -376,17 +537,35 @@ public class Engine {
         }
     }
 
-    // Context
-
+    /**
+     * Class to store the map that link the value and operator name
+     */
     public class Context {
+        
+        /**
+         * The context parent variable can be created a chain of contexts (Not utterly understanded yet)
+         */
         Context parent;
+        
+        /**
+         * A hash map with a {@link Engine.Sym} as key and {@link Engine.Node} as value
+         */
         Map<Sym, Node> vars;
 
+        /**
+         * Class constructor
+         * @param parent The instance parent of the creating instance
+         */
         public Context(Context parent) {
             this.parent = parent;
-            this.vars = new HashMap<Sym, Node>();
+            this.vars = new HashMap<>();
         }
 
+        /**
+         * 
+         * @param sym
+         * @return The {@link Engine.Node} with the value of the {@link Engine.Sym} operand
+         */
         public Node get(Sym sym) {
             if (vars.containsKey(sym))
                 return vars.get(sym);
@@ -395,12 +574,20 @@ public class Engine {
             return null;
         }
 
+        /**
+         * Set the value of a symbolic variable with the value in the val
+         * 
+         * @param sym {@link Engine.Sym} with the symbolic name of the operand
+         * @param val {@link Engine.Node} with the value of the operand
+         * @return {@link Engine.Node} with the value of the new operand
+         */
         public Node set(Sym sym, Node val) {
             vars.put(sym, val);
             return val;
         }
     }
 
+    // Used in functions not understanded yet.
     public class Composite extends Node {
         Sym head;
         Node[] args;
@@ -438,7 +625,7 @@ public class Engine {
     }
 
     // **** Constructor *****
-
+    // Not understanded yet not necessary yet
     public class Func extends Node {
         protected Sym head;
         protected Node[] args;

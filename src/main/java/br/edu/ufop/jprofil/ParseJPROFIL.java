@@ -26,8 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Simple programming language. See also Kalq1.
- * Additionally to Kalq1 is supports: <ul>
+ * A parser to operations with {@link Interval}
+ * 
+ * Supports: 
+ * <ul>
+  * <li>infix comparisons: ==, !=, &lt;=, &lt;, ==, &gt;=, &st;</li>
+ * <li>infix: +, -, *, /, %, ^</li>
+ * <li>postfix: ! (factorial)</li>
+ * <li>prefix: - (unary), @ (hashcode)</li>
  * <li>++, --</li>
  * <li>parantheses</li>
  * <li>if-then-else-end statements</li>
@@ -40,13 +46,26 @@ import java.util.List;
  * @author Jônata Lucas Nogueira
  */
 public class ParseJPROFIL extends InteractiveParser<Node>{
+    /**
+     * The engine to contains operands, operators and methods to make operations
+     */
     protected Engine engine;
 
+    /**
+     * Class constructor
+     * 
+     * @param engine contains operands, operators and methods to make operations
+     */
     public ParseJPROFIL(Engine engine) {
         super();
         this.engine = engine;
     }
 
+    /**
+     * Allways permits peek the character before advance if current token is empty and 
+     * @param stage 0-beforeAdvance/peek, 1-afterAdvance
+     * @return True of False
+     */
     @Override
     protected boolean canRefeed(int stage) {
         return curr == null && queryState >= 0 && stage == 0 && depth > 1;
@@ -137,8 +156,8 @@ public class ParseJPROFIL extends InteractiveParser<Node>{
                 // prefix name pbp
                 final Sym sym = (Sym) expression(1000, Sym.class);
                 Num pbp = (Num) expression(1000, Num.class);
-                // define new prefix operator: name=sys.val, pbp=pbp.val
-                new Prefix<Node>(parser, sym.val, (int) pbp.val) {
+                // define new prefix operator: name=sys.varName, pbp=pbp.varName
+                new Prefix<Node>(parser, sym.varName, (int) pbp.val) {
                     @Override
                     public Node makePrefixNode(Node operand) {
                         Node[] args = {operand};
@@ -155,8 +174,8 @@ public class ParseJPROFIL extends InteractiveParser<Node>{
                 // infix name lbp
                 final Sym sym = (Sym) expression(1000, Sym.class);
                 Num lbp = (Num) expression(1000, Num.class);
-                // define new infix operator: name=sys.val, lbp=lbp.val
-                new Infix<Node>(parser, sym.val, (int) lbp.val) {
+                // define new infix operator: name=sys.varName, lbp=lbp.varName
+                new Infix<Node>(parser, sym.varName, (int) lbp.val) {
                     @Override
                     public Node makeInfixNode(Node left, Node right) {
                         Node[] args = {left, right};
