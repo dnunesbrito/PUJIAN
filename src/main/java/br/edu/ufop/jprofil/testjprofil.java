@@ -18,14 +18,14 @@ import java.util.logging.Logger;
  */
 public class testjprofil {
     public static void main(String[] args) {
-        Engine engine = new Engine();
+        /*Engine engine = new Engine();
         ParseJPROFIL parser = new ParseJPROFIL(engine);
         String s = "(A,B)";
-        /*Engine.Inter A,B;
+        Engine.Inter A,B;
         A = engine.new Inter(2,3);
         B = engine.new Inter(4,5);
         engine.push("B", B);
-        //engine.push("A", A);*/
+        //engine.push("A", A);
         Engine.Node tree = engine.new Node();
         try {
             tree = parser.parse(s);
