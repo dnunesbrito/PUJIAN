@@ -63,6 +63,9 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
 
     /**
      * Allways permits peek the character before advance if current token is empty and 
+     * queryState equals to zero means that has other chatacters to peek.
+     * and if has more than one token waiting computing.
+     * 
      * @param stage 0-beforeAdvance/peek, 1-afterAdvance
      * @return True of False
      */
@@ -71,6 +74,9 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
         return curr == null && queryState >= 0 && stage == 0 && depth > 1;
     }
 
+    /**
+     * Used to initialize local parser.
+     */
     @Override
     protected void init() {
         new Whitespace<>(this).setLevel(0);
