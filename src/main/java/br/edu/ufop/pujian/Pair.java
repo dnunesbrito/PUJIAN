@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 darlan
+ * Copyright (C) 2020 darlan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,18 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package br.edu.ufop.jprofil;
+package br.edu.ufop.pujian;
 
 /**
  *
- * @author darlan
+ * @author Darlan Nunes de Brito
+ * @author Jônata Lucas Nogueira
  */
-@SuppressWarnings("serial")
-public class SemanticError extends Exception {
+public class Pair {
+    int start;
+    int end;
+    Pair(int s,int e){
+        this.start = s;
+        this.end = e;
+    }
+    Pair(){
 
-    public SemanticError(String msg) {
-        super(msg);
+    };
+    static Pair push(int s,int e){
+        Pair tmp = new Pair(s,e);
+        return tmp;
     }
 
+    @Override
+    public String toString(){
+        return "[" + this.start + "," + this.end + "]";
+    }
 }
-

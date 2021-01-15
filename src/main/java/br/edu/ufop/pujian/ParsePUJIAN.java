@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package br.edu.ufop.jprofil;
+package br.edu.ufop.pujian;
 
-import br.edu.ufop.jprofil.Engine.*;
+import br.edu.ufop.pujian.Engine.*;
 import anasy.literals.*;
 import anasy.operators.*;
 import anasy.parser.*;
@@ -45,7 +45,7 @@ import java.util.List;
  * @author Darlan Nunes de Brito
  * @author Jônata Lucas Nogueira
  */
-public class ParseJPROFIL extends InteractiveParser<Node>{
+public class ParsePUJIAN extends InteractiveParser<Node>{
     /**
      * The engine to contains operands, operators and methods to make operations
      */
@@ -56,7 +56,7 @@ public class ParseJPROFIL extends InteractiveParser<Node>{
      * 
      * @param engine contains operands, operators and methods to make operations
      */
-    public ParseJPROFIL(Engine engine) {
+    public ParsePUJIAN(Engine engine) {
         super();
         this.engine = engine;
     }

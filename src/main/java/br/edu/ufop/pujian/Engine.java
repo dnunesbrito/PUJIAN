@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package br.edu.ufop.jprofil;
+package br.edu.ufop.pujian;
 
 /**
  * This class is used have the definitions to operators and other methods necessary 
