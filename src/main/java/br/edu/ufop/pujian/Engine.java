@@ -262,6 +262,8 @@ public class Engine {
                 return new Num(val >= that.val ? 1 : 0);
             if (">".equals(op))
                 return new Num(val > that.val ? 1 : 0);
+            if (",".equals(op))
+                return new Inter(val, that.val);
             return super.doBinOp(op, other);
         }
 
@@ -587,14 +589,49 @@ public class Engine {
         }
     }
 
-    // Used in functions not understanded yet.
+    /**
+     * When the string has a {@link Engine.Sym} followed by a {@link Engine.Node} this is a composite. 
+     * For example, A{2,3} or B(2,3) or C(4,5)
+     */
     public class Composite extends Node {
+        
+        /**
+         * The symbolic variable with the name.
+         */
         Sym head;
+        
+        /**
+         * The nodes after the symbolic variable.
+         */
         Node[] args;
+        
+        /**
+         * The brackets type afte the symbolic variable.
+         */
+        char bracketType;
 
+        /**
+         * Class constructor
+         * 
+         * @param head The symbolic variable with the name
+         * @param args An array of nodes between the brakcets
+         */
         public Composite(Sym head, Node[] args) {
             this.head = head;
             this.args = args;
+        }
+
+        /**
+         * Class constructor
+         * 
+         * @param head The symbolic variable with the name
+         * @param args An array of nodes between the brakcets
+         * @param bracketType The brackets type
+         */
+        public Composite(Sym head, Node[] args, char bracketType) {
+            this.head = head;
+            this.args = args;
+            this.bracketType = bracketType;
         }
 
         @Override
@@ -604,6 +641,22 @@ public class Engine {
 
         @Override
         public Node eval() throws SemanticError {
+            if (Character.compare(bracketType, '[') == 0){
+                Node node = context.get(this.head);
+            }
+            if (Character.compare(bracketType, '{') == 0){
+                Node node = context.get(this.head);
+                if(!(node instanceof Inter)){
+                    Num inf = (Num)this.args[0].eval();
+                    Num sup = (Num)this.args[1].eval();
+                    //Engine.BinOp binop = (BinOp) this.args[0];
+                    //Num inf = (Num) binop.left.eval();
+                    //Num sup = (Num) binop.right.eval();
+                    Inter internode = new Inter(inf.val,sup.val);
+                    context.set(head, internode);
+                    return internode;
+                }                    
+            }
             Node node = context.get(this.head);
             if (!(node instanceof Func))
                 throw new SemanticError(String.format("'%s' is not a function.", this.head));

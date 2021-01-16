@@ -30,7 +30,7 @@ import java.util.List;
  * 
  * Supports: 
  * <ul>
-  * <li>infix comparisons: ==, !=, &lt;=, &lt;, ==, &gt;=, &st;</li>
+  * <li>infix comparisons: ==, !=, &lt;=, &lt;, ==, &gt;=, &gt;</li>
  * <li>infix: +, -, *, /, %, ^</li>
  * <li>postfix: ! (factorial)</li>
  * <li>prefix: - (unary), @ (hashcode)</li>
@@ -79,25 +79,51 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
      */
     @Override
     protected void init() {
+        
+        /**
+         * Initialize a Node to whitespace character "literals"
+         */
         new Whitespace<>(this).setLevel(0);
 
+        /**
+         * An instance of RealNum wiht methods lex() and makeNode used to create a node when find a string with a real number.
+         * The class constructor creates a Tokind wich is a type of token. This Tokind is evaluated to each character of the
+         * input string
+         */
         new RealNum<Node>(this, "<num>") {
+            /**
+             *  Recieve an string with real value and returns an {@link Engine.Num}
+             */
             @Override
             public Node makeNode(String lexeme) {
                 return engine.new Num(Double.parseDouble(lexeme));
             }
         }.setLevel(20);
 
+        /**
+         * An instance of Name of variables wiht methods lex() and makeNode used to create a node when 
+         * find a string with a real number.
+         * The class constructor creates a Tokind wich is a type of token. This Tokind is evaluated to each character of the
+         * input string
+         */
         new Name<Node>(this, "<name>") {
+            /**
+             * Receives a string and creates a symbolic variable
+             */
             @Override
             public Node makeNode(String lexeme) {
                 return engine.makeSym(lexeme);
             }
         }.setLevel(50);
-
+        
+        /**
+         * An instance of IntervalNum wiht methods lex() and makeNode used to create a node when find a string with a real number.
+         * The class constructor creates a Tokind wich is a type of token. This Tokind is evaluated to each character of the
+         * input string
+         */
         new IntervalNum<Node>(this, "<inter>"){ //Like it extends litral the constructor calls super constructor wihch will name type
             /**
-             * Recieve an string of the type "inferior limit,superior limit" and returns an interval
+             * Recieve an string with real values "inferior limit,superior limit" and returns an interval
              */
             @Override
             public Node makeNode(String lexeme) {
@@ -109,18 +135,38 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
             }
         }.setLevel(50);
         
+        /**
+         * Used to creates and identify a parentheses token.
+         */
         new TokParentheses(this).setLevel(10);
         
-        new TokBrakets(this).setLevel(10);
+        /**
+         * Used to creates and identify a curly brackets "{}" token.
+         */
+        new TokBraces(this).setLevel(10);
 
+        /**
+         * Used to creates and identify a brackets "[]" token.
+         */
+        new TokBrackets(this).setLevel(10);
+
+        /**
+         * Used to creates and identify an end of line token, and set left precedence to 10.
+         */
         new TokInfix(this, ";", 10).setLevel(10);
 
+        /**
+         * Used to creates and identify a function start token, and set left precedence to 20.
+         */
         new TokFun(this, 20).setLevel(10);
 
+        /**
+         * Used to creates and identify an If token, and set left precedence to 30.
+         */
         new TokIf(this, 30).setLevel(10);
 
         /**
-         * Initialize an token with left precedence equals to 40. As high left
+         * Initialize an token == with left precedence equals to 40. As high left
          * precedence as operation is cast out first.i. e. "+" has lower precedence
          * level than "*". setleve Sets the recognition precedente, in this project
          * never is used is here just to eliminate warning.
@@ -179,9 +225,9 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
             public Node parse(Token<Node> token) throws SyntaxError {
                 // infix name lbp
                 final Sym sym = (Sym) expression(1000, Sym.class);
-                Num lbp = (Num) expression(1000, Num.class);
+                Num lbplocal = (Num) expression(1000, Num.class);
                 // define new infix operator: name=sys.varName, lbp=lbp.varName
-                new Infix<Node>(parser, sym.varName, (int) lbp.val) {
+                new Infix<Node>(parser, sym.varName, (int) lbplocal.val) {
                     @Override
                     public Node makeInfixNode(Node left, Node right) {
                         Node[] args = {left, right};
@@ -193,37 +239,84 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
         };
     }
 
+    /**
+     * Used to creates and identify an Infix token, with position between two operands. Named as Infix.
+     */
     class TokInfix extends Infix<Node> {
+        /**
+         * Class constructor
+         * @param parser Parser to initialize the token
+         * @param name The name of the token
+         * @param lbp Left bind precedence level of what token comes first
+         */
         public TokInfix(Parser<Node> parser, String name, int lbp) {
             super(parser, name, lbp);
         }
 
+        /**
+         * Class constructor
+         * @param parser Parser to initialize the token
+         * @param name The name of the token
+         * @param lbp Left bind precedence level of what token comes first
+         * @param rightAssoc Defines the right binding precedence is equals if 0 or smaller than lbp if 1. Associativity for infix
+         */
         public TokInfix(Parser<Node> parser, String name, int lbp, boolean rightAssoc) {
             super(parser, name, lbp, rightAssoc);
         }
 
+        /**
+         * Creates a node with operation left and right operands
+         * @param left left operand
+         * @param right right operand
+         * @return An {@link Engine.Node} with Infix operation as string {@link Tokind.name}
+         */
         @Override
         public Node makeInfixNode(Node left, Node right) {
             return engine.new BinOp(name, left, right);
         }
     }
 
+    /**
+     * Used to create and identify a token that can be prefix and infix. i. e. "+" or "-"
+     */
     class TokPrefixInfix extends PrefixInfix<Node> {
+        /**
+         * Class constructor
+         * 
+         * @param parser Parser to initialize the token
+         * @param name The name of the token
+         * @param pbp Prefix bounding precedence
+         * @param lbp Left bounding precedence level of what token comes first. Precedence when infix.
+         */
         public TokPrefixInfix(Parser<Node> parser, String name, int pbp, int lbp) {
             super(parser, name, pbp, lbp);
         }
 
+        /**
+         * Create a prefix node.
+         * @param operand {@link Engine.Node} with prefix operand.
+         * @return {@link Engine.Node} of created node.
+         */
         @Override
         public Node makePrefixNode(Node operand) {
             return engine.new UnaryOp(name, operand);
         }
 
+        /**
+         * Create an Infix node
+         * @param left Left operand
+         * @param right Right operand
+         * @return {@link Engine.Node} of created node
+         */
         @Override
         public Node makeInfixNode(Node left, Node right) {
             return engine.new BinOp(name, left, right);
         }
     }
 
+    /**
+     * Used to create and identify a token that can be prefix and potfix. i. e. "++" or "--"
+     */
     class TokPrefixPostfix extends PrefixPostfix<Node> {
         public TokPrefixPostfix(Parser<Node> parser, String name, int pbp, int lbp) {
             super(parser, name, pbp, lbp);
@@ -282,15 +375,35 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
         }
     }
 
+    /**
+     * Make a {@link Engine.Composite} mode which contains a {@link Engine.Sym} and a {@link Engine.Node} members.
+     * When the string is, for example, A[2,3] the {@link Engine.Sym} is "A" and {@link Engine.Node} is op = "," operands 2 and 3.
+     */
     class TokParentheses extends Outfix<Node> {
+        /**
+         * Include a token to comma separator to terms between brackets.
+         */
         Tokind<Node> tokComma;
 
+        /**
+         * Class constructor of "()" brakcets
+         * 
+         * @param parser {@link Parser} parameter
+         */
         public TokParentheses(Parser<Node> parser) {
             super(parser, "(", ")", 0);
             this.lbp = 200;
             this.tokComma = Operator.make(parser, ",", 0);
         }
 
+        /**
+         * Parse when on an input string has a composite.
+         * 
+         * @param token Token with the left token node.
+         * @param left The left node.
+         * @return {@link Engine.Node} with created composite node.
+         * @throws SyntaxError 
+         */
         @Override
         public Node parse(Token<Node> token, Node left) throws SyntaxError {
             if (!(left instanceof Engine.Sym))
@@ -307,21 +420,38 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
     }
 
     /**
-     * Implents this later
+     * Make a {@link Engine.Composite} mode which contains a {@link Engine.Sym} and a {@link Engine.Node} members.
+     * When the string is, for example, A[2,3] the {@link Engine.Sym} is "A" and {@link Engine.Node} is op = "," operands 2 and 3.
      */
-    class TokBrakets extends Outfix<Node> {
+    class TokBraces extends Outfix<Node> {
+        /**
+         * Include a token to comma separator to terms between brackets.
+         */
         Tokind<Node> tokComma;
 
-        public TokBrakets(Parser<Node> parser) {
-            super(parser, "{", "}", 0);
+        /**
+         * Class constructor of "[]" brakcets
+         * 
+         * @param parser {@link Parser} parameter
+         */
+        public TokBraces(Parser<Node> parser) {
+            super(parser, "[", "]", 0);
             this.lbp = 200;
             this.tokComma = Operator.make(parser, ",", 0);
         }
 
+        /**
+         * Parse when on an input string has a composite.
+         * 
+         * @param token Token with the left token node.
+         * @param left The left node.
+         * @return {@link Engine.Node} with created composite node.
+         * @throws SyntaxError 
+         */
         @Override
         public Node parse(Token<Node> token, Node left) throws SyntaxError {
             if (!(left instanceof Engine.Sym))
-                throw new SyntaxError("Function name expected", input.getLoc());
+                throw new SyntaxError("Variable name expected", input.getLoc());
             // function call or definition
             List<Node> exprs = new ArrayList<>();
             if (advanceIf(tokClose) == null)
@@ -329,10 +459,57 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
                     exprs.add(expression(0));
                 while (advanceIf(tokComma) != null);
             advance(tokClose);
-            return engine.new Composite((Engine.Sym) left, exprs.toArray(new Node[exprs.size()]));
+            return engine.new Composite((Engine.Sym) left, exprs.toArray(new Node[exprs.size()]), '[');
         }
     }
 
+    /**
+     * Make a {@link Engine.Composite} mode which contains a {@link Engine.Sym} and a {@link Engine.Node} members.
+     * When the string is, for example, A{2,3} the {@link Engine.Sym} is "A" and {@link Engine.Node} is op = "," operands 2 and 3.
+     */
+    class TokBrackets extends Outfix<Node> {
+        /**
+         * Include a token to comma separator to terms between brackets.
+         */
+        Tokind<Node> tokComma;
+
+        /**
+         * Class constructor of "{}" brakcets
+         * 
+         * @param parser {@link Parser} parameter
+         */
+        public TokBrackets(Parser<Node> parser) {
+            super(parser, "{", "}", 0);
+            this.lbp = 200;
+            this.tokComma = Operator.make(parser, ",", 0);
+        }
+
+        /**
+         * Parse when on an input string has a composite.
+         * 
+         * @param token Token with the left token node.
+         * @param left The left node.
+         * @return {@link Engine.Node} with created composite node.
+         * @throws SyntaxError 
+         */
+        @Override
+        public Node parse(Token<Node> token, Node left) throws SyntaxError {
+            if (!(left instanceof Engine.Sym))
+                throw new SyntaxError("Variable name expected", input.getLoc());
+            // function call or definition
+            List<Node> exprs = new ArrayList<>();
+            if (advanceIf(tokClose) == null)
+                do
+                    exprs.add(expression(0));
+                while (advanceIf(tokComma) != null);
+            advance(tokClose);
+            return engine.new Composite((Engine.Sym) left, exprs.toArray(new Node[exprs.size()]), '{');
+        }
+    }
+    
+    /**
+     * Not used yet.
+     */
     class TokFun extends Operator<Node> {
         private final Tokind<Node> tokIs;
         private final Tokind<Node> tokEnd;

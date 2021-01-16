@@ -42,7 +42,7 @@ public abstract class IntervalNum<N>  extends Literal<N> {
         char c1 = input.peek(); //Gets one character from input string;
         char c2 = input.peek(1);
         char c3 = input.peek(2);
-        if(c1 != 'I' && c2 != '{' && !Character.isDigit(c3)) return null; //If this character is a bracket assume that it is an interval;
+        if(Character.compare(c1, 'I') != 0 || Character.compare(c2, '{') != 0 && !Character.isDigit(c3)) return null; //If this character is a bracket assume that it is an interval;
         input.advance(2);
         Location lexloc = input.mark();
         input.advanceDigits(10);

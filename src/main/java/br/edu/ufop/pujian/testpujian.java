@@ -20,12 +20,8 @@ public class testpujian {
     public static void main(String[] args) {
         Engine engine = new Engine();
         ParsePUJIAN parser = new ParsePUJIAN(engine);
-        String s = "I{1,2}+B";
-        Engine.Inter A,B;
-        A = engine.new Inter(2,3);
-        B = engine.new Inter(4,5);
-        engine.push("B", B);
-        engine.push("A", A);
+        String s = "A{(2.0+10),3.0}+B{4.0,5.0}";
+        Engine.Inter A;
         Engine.Node tree = engine.new Node();
         try {
             tree = parser.parse(s);
