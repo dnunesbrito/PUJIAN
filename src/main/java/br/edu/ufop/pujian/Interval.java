@@ -240,57 +240,64 @@ public class Interval extends Engine{
     }
     
     /**
-     * Comparison if this interval is smaller than interval A
+     * Calculate the midpoint in this interval
      * 
-     * @param A Interval to make the comparison if smaller
-     * @return 1.0 if this interval is smaller than interval A and 0.0 if false
+     * @return Midpoint result
      */
-    public double smaller(Interval A){
-        if(this.sup < A.inf)
-            return 1.0;
-        else
-            return 0.0;
+    public double midpoint(){
+        double midpoint = (this.inf + this.sup)/2;
+        return midpoint;
     }
     
     /**
-     * Comparison if this interval is smaller equals than interval A
+     * Calculate the width in this interval
      * 
-     * @param A Interval to make the comparison if smaller equals
-     * @return 1.0 if this interval is smaller equals than interval A and 0.0
-     * if false
+     * @return Width result
      */
-    public double smallerEquals(Interval A){
-        if(this.sup <= A.inf)
-            return 1.0;
-        else
-            return 0.0;
+    public double width(){
+        double width = this.sup - this.inf;
+        return width;
     }
     
     /**
-     * Comparison if this interval is greater than interval A
+     * Calculate the magnitude in this interval
      * 
-     * @param A Interval to make the comparison if greater
-     * @return 1.0 if this interval is greater than interval A and 0.0 if false
+     * @return Magnitude result
      */
-    public double greater(Interval A){
-        if(this.inf > A.sup)
-            return 1.0;
-        else
-            return 0.0;
+    public double magnitude(){
+        double magnitude = Math.abs(this.inf);
+        if(magnitude > this.sup)
+            return magnitude;
+        else{
+            magnitude = Math.abs(this.sup);
+            return magnitude;
+        }    
     }
     
     /**
-     * Comparison if this interval is greater equals than interval A
+     * Calculate the mignitude in this interval
      * 
-     * @param A Interval to make the comparison if greater equals
-     * @return 1.0 if this interval is greater equals than interval A and 0.0
-     * if false
+     * @return Mignitude result
      */
-    public double greaterEquals(Interval A){
-        if(this.inf >= A.sup)
-            return 1.0;
-        else
-            return 0.0;
+    public double mignitude(){
+        double mignitude;
+        if(this.inf > 0){
+            mignitude = this.inf;
+            return mignitude;
+        }else if(this.sup < 0){
+            mignitude = -this.sup;
+            return mignitude;
+        }else
+            return 0.0;    
     }
     
+    /**
+     * Calculate the absolute value in this interval
+     * 
+     * @return Absolute value result
+     */
+    public double abs(){
+        double abs = magnitude() - mignitude();
+        return abs;
+    }
 }
