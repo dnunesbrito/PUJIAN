@@ -10,7 +10,6 @@ import anasy.parser.SyntaxError;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
  *
  * @author Darlan Nunes de Brito

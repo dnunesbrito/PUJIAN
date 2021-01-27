@@ -29,7 +29,14 @@ import java.util.Map;
 
 public class Engine {
 
+    /**
+     * Stores all the symbolic variables
+     */
     Map<String, Sym> symbols;
+    
+    /**
+     * Stores the symbolic variable with your values
+     */
     Context context;
 
     /**
@@ -106,6 +113,7 @@ public class Engine {
      * the main goal of this classe is to be used to generalize the types.
      */
     public class Node {
+        
         /**
          * Return the node
          * @return this The owned Node
@@ -439,6 +447,7 @@ public class Engine {
         public String toString() {
             return "(" + left.toString() + op + right.toString() + ")";
         }
+        
         /**
          * If operator is "equal", set the contex list with the value creating a Sym and context.
          * If not get the left operator from context list and make the operation

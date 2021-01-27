@@ -5,6 +5,12 @@
     <artifactId>PUJIAN</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+    <name>PUJIAN</name>
     <dependencies>
         <dependency>
             <groupId>br.edu.br</groupId>
@@ -12,10 +18,4 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-    </properties>
-    <name>PUJIAN</name>
 </project>
