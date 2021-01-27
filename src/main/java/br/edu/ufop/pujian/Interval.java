@@ -199,6 +199,22 @@ public class Interval extends Engine{
     }
     
     /**
+     * Divides two intervals
+     * 
+     * @param A Interval to make the division
+     * @return Interval result
+     */
+    public Interval div(Interval A){ 
+        if(A.inf > 0 || A.sup < 0){
+            Interval x = new Interval(1/A.sup, 1/A.inf);
+            Interval div = mult(x);
+            return div;
+        }else{
+            throw new ArithmeticException("The interval contains zero number");
+        }
+    }
+    
+    /**
      * Potentiates an interval
      * 
      * @param power Double number to make the exponentiation 
@@ -206,9 +222,21 @@ public class Interval extends Engine{
      */
     public Interval pow(double power){
         Interval pow = new Interval();
-        pow.inf = Math.pow(this.inf, power);
-        pow.sup = Math.pow(this.sup, power);
-        
+        if(this.inf > 0){
+            pow.inf = Math.pow(this.inf, power);
+            pow.sup = Math.pow(this.sup, power);
+        }
+        else if(this.sup < 0){
+            pow.inf = Math.pow(this.sup, power);
+            pow.sup = Math.pow(this.inf, power);
+        }else{
+            pow.inf = 0;
+            double max = Math.abs(this.inf);
+            if(this.sup > max)
+                pow.sup = Math.abs(this.sup);
+            else
+                pow.sup = max;
+        }
         return pow;
     }
     
