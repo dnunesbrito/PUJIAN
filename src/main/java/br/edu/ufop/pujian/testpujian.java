@@ -17,11 +17,17 @@ import java.util.logging.Logger;
  */
 public class testpujian {
     public static void main(String[] args) {
-        Engine engine = new Engine();
+        /*Engine engine = new Engine();
         ParsePUJIAN parser = new ParsePUJIAN(engine);
-        String s = "A{(2.0+10),3.0}+B{4.0,5.0}";
+        Engine.Node tree = null;
+        try {
+            tree = parser.ReadNodesFromFile("StringPrograma.txt");
+        } catch (SemanticError ex) {
+            Logger.getLogger(testpujian.class.getName()).log(Level.SEVERE, null, ex);
+            System.exit(0);
+        }
+        String s = "A{3.13,3.15};cos(A)";
         Engine.Inter A;
-        Engine.Node tree = engine.new Node();
         try {
             tree = parser.parse(s);
         } catch (SyntaxError ex) {
@@ -33,6 +39,10 @@ public class testpujian {
             System.out.println(A);
         } catch (SemanticError ex) {
             Logger.getLogger(testpujian.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
+        Interval A,B;
+        B = new Interval(Math.PI/2,Math.PI);
+        A = InterFunctions.cos(B);
+        System.out.println("[" + A.getInf() + "," + A.getSup() + "]");
     }
 }

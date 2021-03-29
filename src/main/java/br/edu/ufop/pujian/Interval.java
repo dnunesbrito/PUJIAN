@@ -29,13 +29,39 @@ public class Interval extends Engine{
     /**
      * Public member to inferior limit of the interval
      */
-    public double inf;
+    private double inf;
     
+    public double getInf(){
+        return inf;
+    }
+    
+    public void setInf(double val){
+        if (val < sup){
+            inf = val;
+        }else{
+            inf = sup;
+            sup = val;
+        }
+    }
     /**
      * Public member to superior limit of the interval
      */
-    public double sup;
+    private double sup;
 
+    public double getSup(){
+        return sup;
+    }
+    
+    public void setSup(double val){
+        if (val > inf){
+            sup = val;
+        }else{
+            sup = inf;
+            inf = val;
+        }
+    }
+
+    
     /**
      * Empty class constructor
      */

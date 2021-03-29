@@ -29,6 +29,8 @@ import java.io.File;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
 import java.util.Scanner; // Import the Scanner class to read text files
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A parser to operations with {@link Interval}
@@ -170,6 +172,11 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
          */
         new TokIf(this, 30).setLevel(10);
 
+        /**
+         * Used to creates trigonometric function of cossine
+         */
+        new TokTrigoFun(this, "cos", 30).setLevel(10);
+        
         /**
          * Initialize an token == with left precedence equals to 40. As high left
          * precedence as operation is cast out first.i. e. "+" has lower precedence
@@ -542,20 +549,48 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
         }
     }
     
-    public class ComandsFromFile{
-        public void ReadFromFile(String filename){
-            try{
-                File myObj = new File(filename);
-                Scanner myReader = new Scanner(myObj);
-                while (myReader.hasNextLine()) {
-                String data = myReader.nextLine();
-                System.out.println(data);
-            }
-                myReader.close();
-            } catch (FileNotFoundException e) {
-                System.out.println("An error occurred.");
-                e.printStackTrace();
-            }
+    class TokTrigoFun extends Operator<Node> {
+
+        String head;
+        public TokTrigoFun(Parser<Node> parser, String name, int lbp) {
+            super(parser, name, lbp);
+            head = name;
         }
+
+        @Override
+        public Node parse(Token<Node> token) throws SyntaxError {
+            Node node = expression(0);
+            return engine.new TrigoFunc(head, node);
+        }
+        
+    }
+    /**
+     * Read commands from a file. The commands must be separated by semicolon or writed in multiple lines
+     * 
+     * @param filename Path with name of the file to be readed
+     * @return {@link Engine.Node} cotaining the node with the answare for all commands on file
+     */
+    public Engine.Node ReadNodesFromFile(String filename) throws SemanticError{
+        Engine.Node tree = null;
+        try{
+            File myObj = new File(filename);
+            try (Scanner myReader = new Scanner(myObj)) {
+                Engine.Inter A;
+                tree = engine.new Node();
+
+                while (myReader.hasNextLine()) {
+                    String data = myReader.nextLine();
+                    try {
+                        tree = this.parse(data);
+                        tree.eval();
+                    } catch (SyntaxError ex) {
+                        Logger.getLogger(testpujian.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+        }
+        return tree;
     }
 }

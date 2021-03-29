@@ -318,7 +318,7 @@ public class Engine {
          */
         @Override
         public String toString(){
-            return "[" + val.inf + "," + val.sup + "]";
+            return "[" + val.getInf() + "," + val.getSup() + "]";
         }
 
         /**
@@ -549,7 +549,7 @@ public class Engine {
     }
 
     /**
-     * Class to store the map that link the value and operator name
+     * Class to store the map that link the value and variable name
      */
     public class Context {
         
@@ -658,15 +658,15 @@ public class Engine {
                 if(!(node instanceof Inter)){
                     Num inf = (Num)this.args[0].eval();
                     Num sup = (Num)this.args[1].eval();
-                    //Engine.BinOp binop = (BinOp) this.args[0];
-                    //Num inf = (Num) binop.left.eval();
-                    //Num sup = (Num) binop.right.eval();
                     Inter internode = new Inter(inf.val,sup.val);
                     context.set(head, internode);
                     return internode;
                 }                    
             }
             Node node = context.get(this.head);
+            if (node instanceof TrigoFunc){
+                System.out.println(this.head);
+            }
             if (!(node instanceof Func))
                 throw new SemanticError(String.format("'%s' is not a function.", this.head));
             Func func = (Func) node;
@@ -686,13 +686,20 @@ public class Engine {
         }
     }
 
-    // **** Constructor *****
-    // Not understanded yet not necessary yet
+    /**
+     * Class to store a name and arguments of a custom function created by the reserved word fun
+     */
     public class Func extends Node {
         protected Sym head;
         protected Node[] args;
         protected Node body;
 
+        /**
+         * Class Constructor
+         * @param head The name of the function
+         * @param args The arguments of the function
+         * @param body The body of the function which is what the function do.
+         */
         public Func(Sym head, Node[] args, Node body) {
             this.head = head;
             this.args = args;
@@ -707,6 +714,32 @@ public class Engine {
         @Override
         public String toString() {
             return "fun " + head + "(" + itemsToString(args, ",") + ") is " + body + " end";
+        }
+    }
+    
+    public class TrigoFunc extends Node {
+        protected String head;
+        protected Node args;
+        
+        public TrigoFunc(String head, Node args) {
+            this.head = head;
+            this.args = args;
+        }
+        
+        @Override
+        public Node eval() throws SemanticError {
+            switch (head){
+                case "cos":
+                    Inter a = (Inter) args.eval();
+                    Inter b = new Inter(Math.cos(a.val.getInf()),Math.cos(a.val.getSup()));
+                    return (Node) b;
+            }
+            return null;
+        }
+        
+        @Override
+        public String toString() {
+            return head + "(" + args + ")";
         }
     }
 }
