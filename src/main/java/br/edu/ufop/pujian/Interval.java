@@ -31,10 +31,18 @@ public class Interval extends Engine{
      */
     private double inf;
     
+    /**
+     * Get the lower bound of the interval
+     * @return The lower bound of the interval
+     */
     public double getInf(){
         return inf;
     }
     
+    /**
+     * Set the lower bound value of the interval
+     * @param val Value to set the lower bound
+     */
     public void setInf(double val){
         if (val < sup){
             inf = val;
@@ -48,10 +56,18 @@ public class Interval extends Engine{
      */
     private double sup;
 
+    /**
+     * Get the upper bound of the interval
+     * @return The lower bound of the interval
+     */
     public double getSup(){
         return sup;
     }
     
+    /**
+     * Set the upper bound of the interval
+     * @param val The upper bound of the interval
+     */
     public void setSup(double val){
         if (val > inf){
             sup = val;
@@ -133,27 +149,18 @@ public class Interval extends Engine{
     
     /**
      * Increment this interval by one
-     * 
-     * @return Interval result
      */
-    public Interval increment(){
-        Interval increment;
-        Interval degenerated = new Interval(1);
-        
-        increment = this.add(degenerated);
-        return increment;
+    public void increment(){
+        this.inf=this.inf+1;
+        this.sup=this.sup+1;
     }
     /**
      * Decrement this interval by one
-     * 
-     * @return Interval result
+     *
      */
-    public Interval decrement(){
-        Interval decrement;
-        Interval degenerated = new Interval(1);
-        
-        decrement = this.sub(degenerated);
-        return decrement;
+    public void decrement(){
+        this.inf = this.inf-1;
+        this.sup = this.sup-1;
     }
 
     /**
@@ -280,7 +287,7 @@ public class Interval extends Engine{
     }
     
     /**
-     * Comparison if this interval is different than interval A
+     * Comparison if this interval is different of the interval A
      * 
      * @param A Interval to make the comparison if different
      * @return 1.0 if this interval is different than interval A and 0.0 if 
@@ -299,8 +306,7 @@ public class Interval extends Engine{
      * @return Midpoint result
      */
     public double midpoint(){
-        double midpoint = (this.inf + this.sup)/2;
-        return midpoint;
+        return (this.inf + this.sup)/2;
     }
     
     /**
@@ -309,23 +315,16 @@ public class Interval extends Engine{
      * @return Width result
      */
     public double width(){
-        double width = this.sup - this.inf;
-        return width;
+        return this.sup - this.inf;
     }
     
     /**
-     * Calculate the magnitude in this interval
+     * Calculate the magnitude in an interval
      * 
      * @return Magnitude result
      */
     public double magnitude(){
-        double magnitude = Math.abs(this.inf);
-        if(magnitude > this.sup)
-            return magnitude;
-        else{
-            magnitude = Math.abs(this.sup);
-            return magnitude;
-        }    
+        return Math.max(Math.abs(inf), Math.abs(sup));
     }
     
     /**
@@ -334,24 +333,20 @@ public class Interval extends Engine{
      * @return Mignitude result
      */
     public double mignitude(){
-        double mignitude;
-        if(this.inf > 0){
-            mignitude = this.inf;
-            return mignitude;
-        }else if(this.sup < 0){
-            mignitude = -this.sup;
-            return mignitude;
-        }else
-            return 0.0;    
+        return Math.min(Math.abs(inf), Math.abs(sup));
     }
     
     /**
-     * Calculate the absolute value in this interval
+     * Calculate the absolute value in an interval
      * 
      * @return Absolute value result
      */
     public double abs(){
-        double abs = magnitude() - mignitude();
-        return abs;
+        return magnitude() - mignitude();
+    }
+    
+    public void clone(Interval A){
+        A.setInf(inf);
+        A.setSup(sup);
     }
 }

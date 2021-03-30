@@ -26,7 +26,7 @@ public class testpujian {
             Logger.getLogger(testpujian.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(0);
         }
-        String s = "A{3.13,3.15};cos(A)";
+        String s = "A{3.13,3.15};sin(A)";
         Engine.Inter A;
         try {
             tree = parser.parse(s);
@@ -41,8 +41,8 @@ public class testpujian {
             Logger.getLogger(testpujian.class.getName()).log(Level.SEVERE, null, ex);
         }*/
         Interval A,B;
-        B = new Interval(Math.PI/2,Math.PI);
-        A = InterFunctions.cos(B);
+        B = new Interval(Math.PI/2,Math.PI/2);
+        A = InterFunctions.sin(B);
         System.out.println("[" + A.getInf() + "," + A.getSup() + "]");
     }
 }

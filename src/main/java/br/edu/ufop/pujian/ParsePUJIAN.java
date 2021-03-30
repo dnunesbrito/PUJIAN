@@ -549,14 +549,34 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
         }
     }
     
+    /**
+     * Class used to implements the tokens of trigonometric functions.
+     */
     class TokTrigoFun extends Operator<Node> {
 
+        /**
+         * The string that contains the function name i. e. cos, sin, tan ...
+         */
         String head;
+        
+        /**
+         * Class constructor
+         * @param parser The object used to parse expressions
+         * @param name The name of trigonometric function
+         * @param lbp Indicates the left precedence of the token
+         */
         public TokTrigoFun(Parser<Node> parser, String name, int lbp) {
             super(parser, name, lbp);
             head = name;
         }
 
+        /**
+         * The function used to parse the token. This function isn't the parser. Parser is an object this function overrides a 
+         * function to parse specifically this token
+         * @param token The instance of the token founded by the parser
+         * @return A node with a TrigoFunc object type. This object is defined in the class {@link Engine}
+         * @throws SyntaxError 
+         */
         @Override
         public Node parse(Token<Node> token) throws SyntaxError {
             Node node = expression(0);
