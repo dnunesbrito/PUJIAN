@@ -345,6 +345,10 @@ public class Interval extends Engine{
         return magnitude() - mignitude();
     }
     
+    /**
+     * Clone one interval to one another
+     * @param A Interval that is cloned to.
+     */
     public void clone(Interval A){
         A.setInf(inf);
         A.setSup(sup);
