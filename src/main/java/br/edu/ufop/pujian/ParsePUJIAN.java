@@ -53,6 +53,7 @@ import java.util.logging.Logger;
  * @author Jônata Lucas Nogueira
  */
 public class ParsePUJIAN extends InteractiveParser<Node>{
+    
     /**
      * The engine to contains operands, operators and methods to make operations
      */
@@ -160,7 +161,7 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
         /**
          * Used to creates and identify an end of line token, and set left precedence to 10.
          */
-        new TokInfix(this, ";", 10).setLevel(10);
+        new TokPostfix(this, ";", 10).setLevel(20);
 
         /**
          * Used to creates and identify a function start token, and set left precedence to 20.
@@ -183,19 +184,19 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
          * level than "*". setleve Sets the recognition precedente, in this project
          * never is used is here just to eliminate warning.
          */
-        new TokInfix(this, "==", 40).setLevel(10);
-        new TokInfix(this, "=", 20).setLevel(10);
-        new TokInfix(this, "!=", 40).setLevel(10);
-        new TokInfix(this, "<=", 40).setLevel(10);
-        new TokInfix(this, "<", 40).setLevel(10);
-        new TokInfix(this, ">=", 40).setLevel(10);
-        new TokInfix(this, ">", 40).setLevel(10);
+        new TokPostfix(this, "==", 40).setLevel(10);
+        new TokPostfix(this, "=", 20).setLevel(10);
+        new TokPostfix(this, "!=", 40).setLevel(10);
+        new TokPostfix(this, "<=", 40).setLevel(10);
+        new TokPostfix(this, "<", 40).setLevel(10);
+        new TokPostfix(this, ">=", 40).setLevel(10);
+        new TokPostfix(this, ">", 40).setLevel(10);
         new TokPrefixInfix(this, "+", 100, 50).setLevel(10);
         new TokPrefixInfix(this, "-", 100, 50).setLevel(10);
-        new TokInfix(this, "*", 60).setLevel(10);
-        new TokInfix(this, "/", 60).setLevel(10);
-        new TokInfix(this, "%", 60).setLevel(10);
-        new TokInfix(this, "^", 70, true).setLevel(10);
+        new TokPostfix(this, "*", 60).setLevel(10);
+        new TokPostfix(this, "/", 60).setLevel(10);
+        new TokPostfix(this, "%", 60).setLevel(10);
+        new TokPostfix(this, "^", 70, true).setLevel(10);
 
         new TokPrefixPostfix(this, "++", 80, 80).setLevel(10);
         new TokPrefixPostfix(this, "--", 80, 80).setLevel(10);
@@ -254,14 +255,14 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
     /**
      * Used to creates and identify an Infix token, with position between two operands. Named as Infix.
      */
-    class TokInfix extends Infix<Node> {
+    class TokPostfix extends Infix<Node> {
         /**
          * Class constructor
          * @param parser Parser to initialize the token
          * @param name The name of the token
          * @param lbp Left bind precedence level of what token comes first
          */
-        public TokInfix(Parser<Node> parser, String name, int lbp) {
+        public TokPostfix(Parser<Node> parser, String name, int lbp) {
             super(parser, name, lbp);
         }
 
@@ -272,7 +273,7 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
          * @param lbp Left bind precedence level of what token comes first
          * @param rightAssoc Defines the right binding precedence is equals if 0 or smaller than lbp if 1. Associativity for infix
          */
-        public TokInfix(Parser<Node> parser, String name, int lbp, boolean rightAssoc) {
+        public TokPostfix(Parser<Node> parser, String name, int lbp, boolean rightAssoc) {
             super(parser, name, lbp, rightAssoc);
         }
 

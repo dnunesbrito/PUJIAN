@@ -126,12 +126,8 @@ public class Interval extends Engine{
      * 
      * @return Interval result
      */
-    public Interval uniAdd(){
-        Interval uniAdd = new Interval();
-        uniAdd.inf = this.inf;
-        uniAdd.sup = this.sup;
-        
-        return uniAdd;
+    public Interval uniAdd(){        
+        return this;
     }
     
     /**
@@ -140,11 +136,10 @@ public class Interval extends Engine{
      * @return Interval result
      */
     public Interval uniSub(){
-        Interval uniSub = new Interval();
-        uniSub.inf = -this.sup;
-        uniSub.sup = -this.inf;
+        this.inf = -this.sup;
+        this.sup = -this.inf;
         
-        return uniSub;
+        return this;
     }
     
     /**
@@ -170,17 +165,35 @@ public class Interval extends Engine{
      * @return Interval result
      */
     public Interval add(Interval A){
-        Interval sum = new Interval();
-        sum.inf = this.inf + A.inf;
-        sum.sup = this.sup + A.sup;
+        this.inf = this.inf + A.inf;
+        this.sup = this.sup + A.sup;
         
-        if(sum.inf > sum.sup){
+        if(this.inf > this.sup){
             double tmp;
-            tmp = sum.inf;
-            sum.inf = sum.sup;
-            sum.sup = tmp;
+            tmp = this.inf;
+            this.inf = this.sup;
+            this.sup = tmp;
         }
-        return sum;
+        return this;
+    }
+    
+    /**
+     * Sum two intervals
+     * 
+     * @param a Double to make sum
+     * @return Interval result
+     */
+    public Interval add(double a){
+        this.inf = this.inf + a;
+        this.sup = this.sup + a;
+        
+        if(this.inf > this.sup){
+            double tmp;
+            tmp = this.inf;
+            this.inf = this.sup;
+            this.sup = tmp;
+        }
+        return this;
     }
     
     /**
@@ -190,18 +203,36 @@ public class Interval extends Engine{
      * @return Interval result
      */
     public Interval sub(Interval A){
-        Interval sub = new Interval(A);
-        sub.inf = this.inf - A.sup;
-        sub.sup = this.sup - A.inf;
+        this.inf = this.inf - A.sup;
+        this.sup = this.sup - A.inf;
         
-        if(sub.inf > sub.sup){
+        if(this.inf > this.sup){
             double tmp;
-            tmp = sub.inf;
-            sub.inf = sub.sup;
-            sub.sup = tmp;
+            tmp = this.inf;
+            this.inf = this.sup;
+            this.sup = tmp;
         }
-        return sub;
+        return this;
     } 
+    
+    /**
+     * Sum two intervals
+     * 
+     * @param a Double to make sum
+     * @return Interval result
+     */
+    public Interval sub(double a){
+        this.inf = this.inf - a;
+        this.sup = this.sup - a;
+        
+        if(this.inf > this.sup){
+            double tmp;
+            tmp = this.inf;
+            this.inf = this.sup;
+            this.sup = tmp;
+        }
+        return this;
+    }
     
     /**
      * Multiplies two intervals
@@ -218,17 +249,17 @@ public class Interval extends Engine{
         
         Interval mult = new Interval();
         
-        mult.inf = result[0];
-        mult.sup = result[0];
+        this.inf = result[0];
+        this.sup = result[0];
         
         for (int i = 1; i < 4; i++) {
             if (result[i] < mult.inf) {
-                mult.inf = result[i];
+                this.inf = result[i];
             } else if (result[i] > mult.sup){
-                mult.sup = result[i];
+                this.sup = result[i];
             }
         }
-        return mult;
+        return this;
     }
     
     /**
@@ -241,9 +272,11 @@ public class Interval extends Engine{
         if(A.inf > 0 || A.sup < 0){
             Interval x = new Interval(1/A.sup, 1/A.inf);
             Interval div = mult(x);
-            return div;
+            inf = div.inf;
+            sup = div.sup;
+            return this;
         }else{
-            throw new ArithmeticException("The interval contains zero number");
+            throw new ArithmeticException("The interval contains zero");
         }
     }
     
@@ -256,21 +289,21 @@ public class Interval extends Engine{
     public Interval pow(double power){
         Interval pow = new Interval();
         if(this.inf > 0){
-            pow.inf = Math.pow(this.inf, power);
-            pow.sup = Math.pow(this.sup, power);
+            this.inf = Math.pow(this.inf, power);
+            this.sup = Math.pow(this.sup, power);
         }
         else if(this.sup < 0){
-            pow.inf = Math.pow(this.sup, power);
-            pow.sup = Math.pow(this.inf, power);
+            this.inf = Math.pow(this.sup, power);
+            this.sup = Math.pow(this.inf, power);
         }else{
-            pow.inf = 0;
+            this.inf = 0;
             double max = Math.abs(this.inf);
             if(this.sup > max)
-                pow.sup = Math.abs(this.sup);
+                this.sup = Math.abs(this.sup);
             else
-                pow.sup = max;
+                this.sup = max;
         }
-        return pow;
+        return this;
     }
     
     /**
@@ -352,5 +385,14 @@ public class Interval extends Engine{
     public void clone(Interval A){
         A.setInf(inf);
         A.setSup(sup);
+    }
+    
+    /**
+     * Overrided method to print interval.
+     *@return String with the formated Interval
+     */
+    @Override
+    public String toString(){
+        return "[" + inf + "," + sup + "]";
     }
 }

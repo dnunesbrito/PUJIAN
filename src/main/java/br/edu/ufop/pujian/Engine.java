@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 darlan
+ * Copyright (C) 2021 Darlan Nunes de Brito
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -138,7 +138,7 @@ public class Engine {
          * Overridable method to make the binary operation. Must be overridable to enveloped type like Num or IntervalNum
          * @param op A string with the unary operation
          * @param other The right operator
-         * @return A Node with operation result. If the operator is ";" return the own node.
+         * @return A Node with operation result. If the operator is ";" return the evaluation of the node.
          * @throws SemanticError 
          */
         public Node doBinOp(String op, Node other) throws SemanticError {
@@ -519,7 +519,7 @@ public class Engine {
         }
 
         /**
-         * 
+         * Eval the node value
          * @return The {@link Engine.Node} with the numeric value of the varName variable
          * @throws SemanticError 
          */
@@ -573,7 +573,7 @@ public class Engine {
         }
 
         /**
-         * 
+         * Get the Node of the context with the sym name
          * @param sym
          * @return The {@link Engine.Node} with the value of the {@link Engine.Sym} operand
          */
@@ -615,7 +615,7 @@ public class Engine {
         Node[] args;
         
         /**
-         * The brackets type afte the symbolic variable.
+         * The brackets type after the node variables.
          */
         char bracketType;
 
@@ -690,8 +690,19 @@ public class Engine {
      * Class to store a name and arguments of a custom function created by the reserved word fun
      */
     public class Func extends Node {
+        /**
+         * The symbolic name of the created function
+         */
         protected Sym head;
+        
+        /**
+         * Arguments list of the function. This is the envelop of the function.
+         */
         protected Node[] args;
+        
+        /**
+         * Node with the arguments used in the function
+         */
         protected Node body;
 
         /**
@@ -719,19 +730,19 @@ public class Engine {
     
     public class TrigoFunc extends Node {
         protected String head;
-        protected Node args;
+        protected Node arg;
         
         public TrigoFunc(String head, Node args) {
             this.head = head;
-            this.args = args;
+            this.arg = args;
         }
         
         @Override
         public Node eval() throws SemanticError {
             switch (head){
                 case "cos":
-                    Inter a = (Inter) args.eval();
-                    Inter b = new Inter(Math.cos(a.val.getInf()),Math.cos(a.val.getSup()));
+                    Inter a = (Inter) arg.eval();
+                    Inter b = new Inter(InterFunctions.cos(a.val));
                     return (Node) b;
             }
             return null;
@@ -739,7 +750,7 @@ public class Engine {
         
         @Override
         public String toString() {
-            return head + "(" + args + ")";
+            return head + "(" + arg + ")";
         }
     }
 }

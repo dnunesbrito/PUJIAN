@@ -106,14 +106,14 @@ public class InterFunctions{
 	case 0:
 	case 3:
 	case 15:
-		cosResult.setInf(Math.sin(angle.getInf()));
-		cosResult.setSup(Math.sin(angle.getSup()));//x_sup = sin (x_sup);
-		return cosResult;
+            cosResult.setInf(Math.sin(angle.getInf()));
+            cosResult.setSup(Math.sin(angle.getSup()));//x_sup = sin (x_sup);
+            return cosResult;
 	case 1:
 	case 14:
-		cosResult.setInf(-1.0);//y_inf = -1.0;
-                cosResult.setSup(Math.max(Math.sin(angle.getInf()), Math.sin(angle.getSup())));
-		return cosResult;
+            cosResult.setInf(-1.0);//y_inf = -1.0;
+            cosResult.setSup(Math.max(Math.sin(angle.getInf()), Math.sin(angle.getSup())));
+            return cosResult;
 	case 2:
 		/*y_inf = -1.0;
 		x_sup = sin (x_sup);
@@ -180,5 +180,17 @@ public class InterFunctions{
         cosResult.setInf(Math.sin(angle.getInf()));
         cosResult.setSup(Math.sin(angle.getSup()));
         return cosResult;
+    }
+    /**
+     * Function used to compute the cossine of an interval angle
+     * @param angle Interval angle to compute de sine.
+     * @return The sine of the interval angle.
+     * @throws ArithmeticException 
+     */
+    public static Interval cos(Interval angle) throws ArithmeticException{
+        Interval angle_added_pi_2;
+        angle_added_pi_2 = new Interval(Math.PI/2);
+        angle_added_pi_2.add(angle);
+        return sin(angle_added_pi_2);
     }
 }

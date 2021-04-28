@@ -17,32 +17,33 @@ import java.util.logging.Logger;
  */
 public class testpujian {
     public static void main(String[] args) {
-        /*Engine engine = new Engine();
+        Engine engine = new Engine();
         ParsePUJIAN parser = new ParsePUJIAN(engine);
         Engine.Node tree = null;
         try {
-            tree = parser.ReadNodesFromFile("StringPrograma.txt");
+            tree = parser.ReadNodesFromFile("StringPrograma.txt"); //Verify the problem when putted ";" in the end of the line in the file.
         } catch (SemanticError ex) {
             Logger.getLogger(testpujian.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(0);
         }
-        String s = "A{3.13,3.15};sin(A)";
+/*        String s = "A{3.13,3.15};cos(A)";*/
         Engine.Inter A;
-        try {
+/*        try {
             tree = parser.parse(s);
         } catch (SyntaxError ex) {
             Logger.getLogger(testpujian.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
+        //System.out.println(engine.context.vars);
         System.out.println("Tree: " + tree);
         try {
             A = (Engine.Inter) tree.eval();
             System.out.println(A);
         } catch (SemanticError ex) {
             Logger.getLogger(testpujian.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-        Interval A,B;
-        B = new Interval(Math.PI/2,Math.PI/2);
-        A = InterFunctions.sin(B);
-        System.out.println("[" + A.getInf() + "," + A.getSup() + "]");
+        }
+        /*Interval A,B;
+        B = new Interval(Math.PI/4,Math.PI/2);
+        A = InterFunctions.cos(B);
+        System.out.println(A);*/
     }
 }
