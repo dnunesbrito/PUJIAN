@@ -21,7 +21,7 @@ package br.edu.ufop.pujian;
  * 
  * @author Darlan Nunes de Brito
  */
-public class InterFunctions{
+public class InterFunctions extends Interval{
     
     /**
      * Determines which quadrant the angle is.
@@ -53,7 +53,9 @@ public class InterFunctions{
         double x_inf = A.getInf();
         if (x_inf < 0.0) {
 		x_inf += 2*Math.PI;
-	}
+	}else if(x_inf > 2*Math.PI){
+            x_inf -= 2*Math.PI;
+        }
         double x_sup = A.getSup();
         if (x_sup > 2*Math.PI) {
 		x_sup -= 2*Math.PI;
@@ -63,8 +65,7 @@ public class InterFunctions{
 	if (x_sup > 2*Math.PI)
             throw new ArithmeticException("ScaleTo2Pi (): sup > 2Pi");
 
-        B.setInf(x_inf);
-        B.setSup(x_sup);
+        B.set(x_inf,x_sup);
         return B;
     }
     
@@ -75,14 +76,13 @@ public class InterFunctions{
      * @throws ArithmeticException 
      */
     public static Interval sin(Interval angle) throws ArithmeticException{
-        Interval cosResult = new Interval(0.0,0.0);
+        Interval cosResult = new Interval(Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY);
         if (angle.width() > 2*Math.PI)
             return cosResult;
 	/* Reduction of x to [0, 2Pi] */
-	cosResult = ScaleTo2Pi (angle);
-	if (cosResult.getSup() >= cosResult.getInf() + 2*Math.PI) { /* security */
-            cosResult.setInf(-1.0);
-            cosResult.setSup(1.0);
+	angle = ScaleTo2Pi (angle);
+	if (angle.getSup() >= angle.getInf() + 2*Math.PI) { /* security */
+            cosResult.set(-1.0,1.0);
             return cosResult;
 	}
 	/* x_inf, x_sup are now in the range [0, 2Pi]
@@ -93,12 +93,12 @@ public class InterFunctions{
 	 *  3 = [3Pi/2,2Pi]
 	 */
         int q_inf,q_sup;
-	q_inf = Quadrant (cosResult.getInf());
-	q_sup = Quadrant (cosResult.getSup());
+	q_inf = Quadrant (angle.getInf());
+	q_sup = Quadrant (angle.getSup());
 
-	if ((q_inf == q_sup) && (cosResult.getSup() > cosResult.getInf() + Math.PI)) {
-		cosResult.setInf(-1.0);
-                cosResult.setSup(1.0);
+
+	if ((q_inf == q_sup) && (angle.getSup() > angle.getInf() + Math.PI)) {
+		cosResult.set(-1.0,1.0);
 		return cosResult;
 	}
 	switch ((q_sup << 2) + q_inf)
@@ -106,21 +106,18 @@ public class InterFunctions{
 	case 0:
 	case 3:
 	case 15:
-            cosResult.setInf(Math.sin(angle.getInf()));
-            cosResult.setSup(Math.sin(angle.getSup()));//x_sup = sin (x_sup);
+            cosResult.set(Math.sin(angle.getInf()),Math.sin(angle.getSup()));//x_sup = sin (x_sup);
             return cosResult;
 	case 1:
 	case 14:
-            cosResult.setInf(-1.0);//y_inf = -1.0;
-            cosResult.setSup(Math.max(Math.sin(angle.getInf()), Math.sin(angle.getSup())));
+            cosResult.set(-1.0,Math.max(Math.sin(angle.getInf()), Math.sin(angle.getSup())));
             return cosResult;
 	case 2:
 		/*y_inf = -1.0;
 		x_sup = sin (x_sup);
 		y_sup = RoundUp (x_sup);
 		break;*/
-            cosResult.setInf(-1.0);
-            cosResult.setSup(Math.sin(angle.getSup()));
+            cosResult.set(-1.0,Math.sin(angle.getSup()));
             return cosResult;
 	case 4:
 	case 11:
@@ -131,8 +128,7 @@ public class InterFunctions{
 		x_sup = RoundDown (x_sup);
 		y_inf = Minimum(x_inf, x_sup);
 		break;*/
-            cosResult.setSup(1.0);
-            cosResult.setInf(Math.min(Math.sin(angle.getInf()), Math.sin(angle.getSup())));
+            cosResult.set(1.0,Math.min(Math.sin(angle.getInf()), Math.sin(angle.getSup())));
             return cosResult;
 	case 5:
 	case 9:
@@ -142,43 +138,37 @@ public class InterFunctions{
 		y_inf = RoundDown (x_sup);
 		y_sup = RoundUp (x_inf);
 		break;*/
-            cosResult.setInf(Math.sin(angle.getInf()));
-            cosResult.setSup(Math.sin(angle.getSup()));
+            cosResult.set(Math.sin(angle.getInf()),Math.sin(angle.getSup()));
             return cosResult;
 	case 6:
 	case 12:
 		//y_inf = -1.0; y_sup = 1.0; break;
-            cosResult.setInf(-1.0);
-            cosResult.setSup(1.0);
+            cosResult.set(-1.0,1.0);
             return cosResult;
 	case 7:
 		/*y_sup = 1.0;
 		x_inf = sin (x_inf);
 		y_inf = RoundDown (x_inf);
 		break;*/
-            cosResult.setSup(1.0);
-            cosResult.setInf(Math.sin(angle.getInf()));
+            cosResult.set(1.0,Math.sin(angle.getInf()));
             return cosResult;
 	case 8:
 		/*y_sup = 1.0;
 		x_sup = sin (x_sup);
 		y_inf = RoundDown (x_sup);
 		break;*/
-            cosResult.setSup(1.0);
-            cosResult.setInf(Math.sin(angle.getSup()));
+            cosResult.set(1.0,Math.sin(angle.getSup()));
             return cosResult;
 	case 13:
 		/*y_inf = -1.0;
 		x_inf = sin (x_inf);
 		y_sup = RoundUp (x_inf);
 		break;*/
-            cosResult.setInf(-1.0);
-            cosResult.setSup(Math.sin(angle.getInf()));
+            cosResult.set(-1.0,Math.sin(angle.getInf()));
             return cosResult;
 	}
         
-        cosResult.setInf(Math.sin(angle.getInf()));
-        cosResult.setSup(Math.sin(angle.getSup()));
+        cosResult.set(Math.sin(angle.getInf()),Math.sin(angle.getSup()));
         return cosResult;
     }
     /**
@@ -190,7 +180,123 @@ public class InterFunctions{
     public static Interval cos(Interval angle) throws ArithmeticException{
         Interval angle_added_pi_2;
         angle_added_pi_2 = new Interval(Math.PI/2);
-        angle_added_pi_2.add(angle);
+        angle_added_pi_2 = angle_added_pi_2.add(angle);
         return sin(angle_added_pi_2);
+    }
+    /**
+     * Function used to compute the cossine of an interval angle
+     * @param angle Interval angle to compute de sine.
+     * @return The sine of the interval angle.
+     * @throws ArithmeticException 
+     */
+    public static Interval tan(Interval angle) throws ArithmeticException{
+	/*Double x_inf, x_sup;
+	Double y_inf, y_sup;
+	Integer q_inf, q_sup;
+
+	if (BiasDiam (pX) >= BiasTwoPi) {
+		BiasHullRR (pR, & BiasNegInf, & BiasPosInf);
+		return;
+	}
+	/* Reduction of x to [0, 2Pi] 
+	ScaleTo2Pi(& x_inf, & x_sup, pX);
+	if (x_sup >= x_inf + BiasTwoPi) { /* security 
+		BiasHullRR (pR, & BiasNegInf, & BiasPosInf);
+		return;
+	}
+	/* x_inf, x_sup are now in the range [0, 2Pi]
+	 * Quadrants:
+	 *  0 = [0,Pi/2]
+	 *  1 = [Pi/2,Pi]
+	 *  2 = [Pi,3Pi/2]
+	 *  3 = [3Pi/2,2Pi]
+	 *
+	q_inf = Quadrant (x_inf);
+	q_sup = Quadrant (x_sup);
+
+	if ((q_inf == q_sup) && (x_sup > x_inf + BiasPi)) {
+		BiasHullRR (pR, & BiasNegInf, & BiasPosInf);
+		return;
+	}
+        */
+        
+        Interval tanResult = new Interval(Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY);
+        if (angle.width() > 2*Math.PI)
+            return tanResult;
+	/* Reduction of x to [0, 2Pi] */
+	angle = ScaleTo2Pi (angle);
+	if (angle.getSup() >= angle.getInf() + 2*Math.PI) { /* security */
+            tanResult.set(-1.0,1.0);
+            return tanResult;
+	}
+
+        int q_inf, q_sup;
+	/* x_inf, x_sup are now in the range [0, 2Pi]
+	 * Quadrants:
+	 *  0 = [0,Pi/2]
+	 *  1 = [Pi/2,Pi]
+	 *  2 = [Pi,3Pi/2]
+	 *  3 = [3Pi/2,2Pi]
+	 */
+	q_inf = Quadrant (angle.getInf());
+	q_sup = Quadrant (angle.getSup());
+
+	if ((q_inf == q_sup) && (angle.getSup() > angle.getInf() + Math.PI)) {
+		tanResult.set(-1.0,1.0);
+		return tanResult;
+	}
+	switch ((q_sup << 2) + q_inf)
+	{
+            case 0:
+            case 3:
+            case 5:
+            case 9:
+            case 10:
+            case 15:
+                    /*x_inf = tan (x_inf);
+                    x_sup = tan (x_sup);
+                    y_inf = RoundDown (x_inf);
+                    y_sup = RoundUp   (x_sup);*/
+                tanResult.set(Math.tan(angle.getInf()),Math.tan(angle.getSup()));
+                return tanResult;
+            default:
+                return tanResult;
+	}
+    }
+    /**
+     * Function used to compute the cotangent of an interval value
+     * @param tanvalue Interval with the value to compute cotangent.
+     * @return The cotangent of the interval angle.
+     * @throws ArithmeticException 
+     */
+    public static Interval cot(Interval tanvalue) throws ArithmeticException{
+        Interval angle;
+        tanvalue.add(Math.PI/2);
+        angle = tan(tanvalue);
+        angle.uniSub();
+        return angle;
+    }
+    /**
+     * Function used to compute the cotangent of an interval value
+     * @param tanvalue Interval with the value to compute cotangent.
+     * @return The cotangent of the interval angle.
+     * @throws ArithmeticException 
+     */
+    public static Interval asin(Interval tanvalue) throws ArithmeticException{
+	/*REAL x_inf, x_sup;
+
+	x_inf = BiasInf (pX); x_sup = BiasSup (pX);
+	if ((x_inf < -1.0) || (x_sup > 1.0))
+		_BiasError ("ArcSin argument out of range");
+	x_inf = asin (x_inf);
+	x_sup = asin (x_sup);
+	x_inf = RoundDown (x_inf);
+	x_sup = RoundUp   (x_sup);
+	BiasHullRR (pR, & x_inf, & x_sup);*/
+        Interval angle = new Interval();
+        if(tanvalue.getInf() < -1.0 || tanvalue.getSup() > 1.0)
+            throw new ArithmeticException("ArcSin argument out of range");
+        angle.set(Math.asin(tanvalue.getInf()),Math.asin(tanvalue.getSup()));
+        return angle;
     }
 }

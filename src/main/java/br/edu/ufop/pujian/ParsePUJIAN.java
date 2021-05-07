@@ -161,7 +161,7 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
         /**
          * Used to creates and identify an end of line token, and set left precedence to 10.
          */
-        new TokPostfix(this, ";", 10).setLevel(20);
+        new TokInfix(this, ";", 10).setLevel(10);
 
         /**
          * Used to creates and identify a function start token, and set left precedence to 20.
@@ -179,24 +179,28 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
         new TokTrigoFun(this, "cos", 30).setLevel(10);
         
         /**
+         * Used to creates trigonometric function of cossine
+         */
+        new TokTrigoFun(this, "sin", 30).setLevel(10);
+        /**
          * Initialize an token == with left precedence equals to 40. As high left
          * precedence as operation is cast out first.i. e. "+" has lower precedence
          * level than "*". setleve Sets the recognition precedente, in this project
          * never is used is here just to eliminate warning.
          */
-        new TokPostfix(this, "==", 40).setLevel(10);
-        new TokPostfix(this, "=", 20).setLevel(10);
-        new TokPostfix(this, "!=", 40).setLevel(10);
-        new TokPostfix(this, "<=", 40).setLevel(10);
-        new TokPostfix(this, "<", 40).setLevel(10);
-        new TokPostfix(this, ">=", 40).setLevel(10);
-        new TokPostfix(this, ">", 40).setLevel(10);
+        new TokInfix(this, "==", 40).setLevel(10);
+        new TokInfix(this, "=", 20).setLevel(10);
+        new TokInfix(this, "!=", 40).setLevel(10);
+        new TokInfix(this, "<=", 40).setLevel(10);
+        new TokInfix(this, "<", 40).setLevel(10);
+        new TokInfix(this, ">=", 40).setLevel(10);
+        new TokInfix(this, ">", 40).setLevel(10);
         new TokPrefixInfix(this, "+", 100, 50).setLevel(10);
         new TokPrefixInfix(this, "-", 100, 50).setLevel(10);
-        new TokPostfix(this, "*", 60).setLevel(10);
-        new TokPostfix(this, "/", 60).setLevel(10);
-        new TokPostfix(this, "%", 60).setLevel(10);
-        new TokPostfix(this, "^", 70, true).setLevel(10);
+        new TokInfix(this, "*", 60).setLevel(10);
+        new TokInfix(this, "/", 60).setLevel(10);
+        new TokInfix(this, "%", 60).setLevel(10);
+        new TokInfix(this, "^", 70, true).setLevel(10);
 
         new TokPrefixPostfix(this, "++", 80, 80).setLevel(10);
         new TokPrefixPostfix(this, "--", 80, 80).setLevel(10);
@@ -255,14 +259,14 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
     /**
      * Used to creates and identify an Infix token, with position between two operands. Named as Infix.
      */
-    class TokPostfix extends Infix<Node> {
+    class TokInfix extends Infix<Node> {
         /**
          * Class constructor
          * @param parser Parser to initialize the token
          * @param name The name of the token
          * @param lbp Left bind precedence level of what token comes first
          */
-        public TokPostfix(Parser<Node> parser, String name, int lbp) {
+        public TokInfix(Parser<Node> parser, String name, int lbp) {
             super(parser, name, lbp);
         }
 
@@ -273,7 +277,7 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
          * @param lbp Left bind precedence level of what token comes first
          * @param rightAssoc Defines the right binding precedence is equals if 0 or smaller than lbp if 1. Associativity for infix
          */
-        public TokPostfix(Parser<Node> parser, String name, int lbp, boolean rightAssoc) {
+        public TokInfix(Parser<Node> parser, String name, int lbp, boolean rightAssoc) {
             super(parser, name, lbp, rightAssoc);
         }
 
@@ -586,19 +590,19 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
         
     }
     /**
-     * Read commands from a file. The commands must be separated by semicolon or writed in multiple lines
+     * Read commands from a file.The commands must be separated by semicolon or writed in multiple lines
      * 
      * @param filename Path with name of the file to be readed
      * @return {@link Engine.Node} cotaining the node with the answare for all commands on file
+     * @throws br.edu.ufop.pujian.SemanticError
      */
-    public Engine.Node ReadNodesFromFile(String filename) throws SemanticError{
+    public Node ReadNodesFromFile(String filename) throws SemanticError{
         Engine.Node tree = null;
         try{
             File myObj = new File(filename);
             try (Scanner myReader = new Scanner(myObj)) {
                 Engine.Inter A;
                 tree = engine.new Node();
-
                 while (myReader.hasNextLine()) {
                     String data = myReader.nextLine();
                     try {
@@ -610,7 +614,7 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
+            System.out.println("An error occurred when reading the file: FileNotFoundException.");
         }
         return tree;
     }

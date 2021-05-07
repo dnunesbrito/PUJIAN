@@ -25,7 +25,9 @@ package br.edu.ufop.pujian;
  */
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class Engine {
 
@@ -108,6 +110,44 @@ public class Engine {
         this.context = this.context.parent;
     }
 
+    /**
+     * Function used to print all context of variables
+     */
+    public void printContext (){
+        Set<Engine.Sym> chaves = context.vars.keySet();
+	for (Iterator<Engine.Sym> iterator = chaves.iterator(); iterator.hasNext();)
+	{
+		Engine.Sym chave = iterator.next();
+		if(chave != null){
+                    System.out.println(chave.varName + ": ");
+                    System.out.println(context.get(chave));
+                }
+	}
+    }
+    
+    /**
+     * Print only one variable of the context
+     * @param varname variable name to be printed
+     */
+    public void printContextVariable(String varname){
+        Sym key = symbols.get(varname);
+        System.out.println(varname + ":");
+        Node printable = context.get(key);
+        if(printable != null)
+            System.out.println(printable);
+        else
+            System.out.println("Variable do not exist in context.");
+    }
+    
+    /**
+     * Get the node from context variable name
+     * @param varname the name of the variable to get the node
+     * @return The node with the variable name.
+     */
+    public Node getContextNode(String varname){
+        Sym key = symbols.get(varname);
+        return context.get(key);
+    }
     /**
      * Class to envelop other type declared on this class like Num and IntervalNum
      * the main goal of this classe is to be used to generalize the types.
@@ -292,6 +332,13 @@ public class Engine {
         Interval val;
         
         /**
+         * Empty constructor
+         */
+        public Inter(){
+            
+        }
+        
+        /**
          * Class constructor
          * 
          * @param val An {@link Interval}
@@ -365,10 +412,31 @@ public class Engine {
          */
         @Override
         public Node doBinOp(String op, Node other) throws SemanticError {
-            Inter that = (Inter) other;
-            if ("+".equals(op))
+            Inter that;
+            Num it;
+            switch(op) {
+                case "+":
+                    that = (Inter) other;
+                    return new Inter(val.add(that.val));
+                case "-":
+                    that = (Inter) other;
+                    return new Inter(val.sub(that.val));
+                case "*":
+                    that = (Inter) other;
+                    return new Inter(val.mult(that.val));
+                case "^":
+                    it = (Num) other;
+                    return new Inter(val.pow(it.val));
+                default:
+                    return super.doBinOp(op, other);
+            }
+            /*if ("+".equals(op))
                 return new Inter(val.add(that.val));
-            return super.doBinOp(op, other);
+            if ("-".equals(op))
+                return new Inter(val.sub(that.val));
+            if ("*".equals(op))
+                return new Inter(val.mult(that.val));
+            return super.doBinOp(op, other);*/
         }
 
     }
@@ -739,10 +807,16 @@ public class Engine {
         
         @Override
         public Node eval() throws SemanticError {
+            Inter a;
+            Inter b;
             switch (head){
                 case "cos":
-                    Inter a = (Inter) arg.eval();
-                    Inter b = new Inter(InterFunctions.cos(a.val));
+                    a = (Inter) arg.eval();
+                    b = new Inter(InterFunctions.cos(a.val));
+                    return (Node) b;
+                case "sin":
+                    a = (Inter) arg.eval();
+                    b = new Inter(InterFunctions.sin(a.val));
                     return (Node) b;
             }
             return null;
