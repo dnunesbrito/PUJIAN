@@ -115,7 +115,7 @@ public class Interval extends Engine{
      * 
      * @return Interval result
      */
-    public Interval uniAdd(){        
+    public Interval IPlus(){        
         return this;
     }
     
@@ -124,11 +124,8 @@ public class Interval extends Engine{
      * 
      * @return Interval result
      */
-    public Interval uniSub(){
-        this.inf = -this.sup;
-        this.sup = -this.inf;
-        
-        return this;
+    public Interval INeg(){
+        return new Interval(-this.sup,-this.inf);
     }
     
     /**
@@ -362,10 +359,18 @@ public class Interval extends Engine{
      * 
      * @return Absolute value result
      */
-    public double abs(){
-        return magnitude() - mignitude();
+    public double Rabs(){
+        return Math.max(Math.abs(inf), Math.abs(sup));
     }
-    
+
+    public Interval Iabs(){
+	double t;
+	if (this.inf > 0.0) return this;
+	else if (this.sup < 0.0) return this.INeg();
+	else {
+            return new Interval(0.0,this.Rabs());
+	}        
+    }
     /**
      * Clone one interval to one another
      * @param A Interval that is cloned to.

@@ -174,14 +174,25 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
         new TokIf(this, 30).setLevel(10);
 
         /**
-         * Used to creates trigonometric function of cossine
+         * Used to creates interval trigonometric function of cossine
          */
-        new TokTrigoFun(this, "cos", 30).setLevel(10);
+        new TokInterFun(this, "Cos", 30).setLevel(10);
         
         /**
-         * Used to creates trigonometric function of cossine
+         * Used to creates interval trigonometric function of sine
          */
-        new TokTrigoFun(this, "sin", 30).setLevel(10);
+        new TokInterFun(this, "Sin", 30).setLevel(10);
+
+        /**
+         * Used to creates interval function IAbs
+         */
+        new TokInterFun(this, "IAbs", 30).setLevel(10);
+
+        /**
+         * Used to creates interval function RAbs
+         */
+        new TokInterFun(this, "RAbs", 30).setLevel(10);
+
         /**
          * Initialize an token == with left precedence equals to 40. As high left
          * precedence as operation is cast out first.i. e. "+" has lower precedence
@@ -557,7 +568,7 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
     /**
      * Class used to implements the tokens of trigonometric functions.
      */
-    class TokTrigoFun extends Operator<Node> {
+    class TokInterFun extends Operator<Node> {
 
         /**
          * The string that contains the function name i. e. cos, sin, tan ...
@@ -570,7 +581,7 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
          * @param name The name of trigonometric function
          * @param lbp Indicates the left precedence of the token
          */
-        public TokTrigoFun(Parser<Node> parser, String name, int lbp) {
+        public TokInterFun(Parser<Node> parser, String name, int lbp) {
             super(parser, name, lbp);
             head = name;
         }

@@ -75,7 +75,7 @@ public class InterFunctions extends Interval{
      * @return The sine of the interval angle.
      * @throws ArithmeticException 
      */
-    public static Interval sin(Interval angle) throws ArithmeticException{
+    public static Interval Sin(Interval angle) throws ArithmeticException{
         Interval cosResult = new Interval(Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY);
         if (angle.width() > 2*Math.PI)
             return cosResult;
@@ -106,7 +106,7 @@ public class InterFunctions extends Interval{
 	case 0:
 	case 3:
 	case 15:
-            cosResult.set(Math.sin(angle.getInf()),Math.sin(angle.getSup()));//x_sup = sin (x_sup);
+            cosResult.set(Math.sin(angle.getInf()),Math.sin(angle.getSup()));//x_sup = Sin (x_sup);
             return cosResult;
 	case 1:
 	case 14:
@@ -114,7 +114,7 @@ public class InterFunctions extends Interval{
             return cosResult;
 	case 2:
 		/*y_inf = -1.0;
-		x_sup = sin (x_sup);
+		x_sup = Sin (x_sup);
 		y_sup = RoundUp (x_sup);
 		break;*/
             cosResult.set(-1.0,Math.sin(angle.getSup()));
@@ -122,8 +122,8 @@ public class InterFunctions extends Interval{
 	case 4:
 	case 11:
 		/*y_sup = 1.0;
-		x_inf = sin (x_inf);
-		x_sup = sin (x_sup);
+		x_inf = Sin (x_inf);
+		x_sup = Sin (x_sup);
 		x_inf = RoundDown (x_inf);
 		x_sup = RoundDown (x_sup);
 		y_inf = Minimum(x_inf, x_sup);
@@ -133,8 +133,8 @@ public class InterFunctions extends Interval{
 	case 5:
 	case 9:
 	case 10:
-		/*x_inf = sin (x_inf);
-		x_sup = sin (x_sup);
+		/*x_inf = Sin (x_inf);
+		x_sup = Sin (x_sup);
 		y_inf = RoundDown (x_sup);
 		y_sup = RoundUp (x_inf);
 		break;*/
@@ -147,21 +147,21 @@ public class InterFunctions extends Interval{
             return cosResult;
 	case 7:
 		/*y_sup = 1.0;
-		x_inf = sin (x_inf);
+		x_inf = Sin (x_inf);
 		y_inf = RoundDown (x_inf);
 		break;*/
             cosResult.set(1.0,Math.sin(angle.getInf()));
             return cosResult;
 	case 8:
 		/*y_sup = 1.0;
-		x_sup = sin (x_sup);
+		x_sup = Sin (x_sup);
 		y_inf = RoundDown (x_sup);
 		break;*/
             cosResult.set(1.0,Math.sin(angle.getSup()));
             return cosResult;
 	case 13:
 		/*y_inf = -1.0;
-		x_inf = sin (x_inf);
+		x_inf = Sin (x_inf);
 		y_sup = RoundUp (x_inf);
 		break;*/
             cosResult.set(-1.0,Math.sin(angle.getInf()));
@@ -177,11 +177,11 @@ public class InterFunctions extends Interval{
      * @return The sine of the interval angle.
      * @throws ArithmeticException 
      */
-    public static Interval cos(Interval angle) throws ArithmeticException{
+    public static Interval Cos(Interval angle) throws ArithmeticException{
         Interval angle_added_pi_2;
         angle_added_pi_2 = new Interval(Math.PI/2);
         angle_added_pi_2 = angle_added_pi_2.add(angle);
-        return sin(angle_added_pi_2);
+        return Sin(angle_added_pi_2);
     }
     /**
      * Function used to compute the cossine of an interval angle
@@ -189,7 +189,7 @@ public class InterFunctions extends Interval{
      * @return The sine of the interval angle.
      * @throws ArithmeticException 
      */
-    public static Interval tan(Interval angle) throws ArithmeticException{
+    public static Interval Tan(Interval angle) throws ArithmeticException{
 	/*Double x_inf, x_sup;
 	Double y_inf, y_sup;
 	Integer q_inf, q_sup;
@@ -253,8 +253,8 @@ public class InterFunctions extends Interval{
             case 9:
             case 10:
             case 15:
-                    /*x_inf = tan (x_inf);
-                    x_sup = tan (x_sup);
+                    /*x_inf = Tan (x_inf);
+                    x_sup = Tan (x_sup);
                     y_inf = RoundDown (x_inf);
                     y_sup = RoundUp   (x_sup);*/
                 tanResult.set(Math.tan(angle.getInf()),Math.tan(angle.getSup()));
@@ -269,11 +269,11 @@ public class InterFunctions extends Interval{
      * @return The cotangent of the interval angle.
      * @throws ArithmeticException 
      */
-    public static Interval cot(Interval tanvalue) throws ArithmeticException{
+    public static Interval Cot(Interval tanvalue) throws ArithmeticException{
         Interval angle;
         tanvalue.add(Math.PI/2);
-        angle = tan(tanvalue);
-        angle.uniSub();
+        angle = Tan(tanvalue);
+        angle.INeg();
         return angle;
     }
     /**
@@ -282,14 +282,14 @@ public class InterFunctions extends Interval{
      * @return The cotangent of the interval angle.
      * @throws ArithmeticException 
      */
-    public static Interval asin(Interval tanvalue) throws ArithmeticException{
+    public static Interval Asin(Interval tanvalue) throws ArithmeticException{
 	/*REAL x_inf, x_sup;
 
 	x_inf = BiasInf (pX); x_sup = BiasSup (pX);
 	if ((x_inf < -1.0) || (x_sup > 1.0))
 		_BiasError ("ArcSin argument out of range");
-	x_inf = asin (x_inf);
-	x_sup = asin (x_sup);
+	x_inf = Asin (x_inf);
+	x_sup = Asin (x_sup);
 	x_inf = RoundDown (x_inf);
 	x_sup = RoundUp   (x_sup);
 	BiasHullRR (pR, & x_inf, & x_sup);*/

@@ -808,16 +808,19 @@ public class Engine {
         @Override
         public Node eval() throws SemanticError {
             Inter a;
-            Inter b;
             switch (head){
-                case "cos":
+                case "Cos":
                     a = (Inter) arg.eval();
-                    b = new Inter(InterFunctions.cos(a.val));
-                    return (Node) b;
-                case "sin":
+                    return new Inter(InterFunctions.Cos(a.val));
+                case "Sin":
                     a = (Inter) arg.eval();
-                    b = new Inter(InterFunctions.sin(a.val));
-                    return (Node) b;
+                    return new Inter(InterFunctions.Sin(a.val));
+                case "IAbs":
+                    a = (Inter) arg.eval();
+                    return new Inter(a.val.Iabs());
+                case "RAbs":
+                    a = (Inter) arg.eval();
+                    return new Num(a.val.Rabs());
             }
             return null;
         }
