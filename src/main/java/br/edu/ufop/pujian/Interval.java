@@ -16,6 +16,8 @@
  */
 package br.edu.ufop.pujian;
 
+import java.util.Arrays;
+
    
 /**
  * Class used to define the Interval type. This type
@@ -359,17 +361,37 @@ public class Interval extends Engine{
      * 
      * @return Absolute value result
      */
-    public double Rabs(){
+    public double RAbs(){
         return Math.max(Math.abs(inf), Math.abs(sup));
     }
+    
+    /**
+     * Get the hull between an {@link Interval} and a double value
+     * @param b Double value
+     * @return {@link Interval} with the hull
+     */
+    public Interval Hull(double b){
+        double[] arr = new double[3];
+        arr[0] = inf;
+        arr[1] = sup;
+        arr[2] = b;
+        Arrays.sort(arr);
+        return new Interval(arr[0],arr[2]);
+    }
 
-    public Interval Iabs(){
-	double t;
-	if (this.inf > 0.0) return this;
-	else if (this.sup < 0.0) return this.INeg();
-	else {
-            return new Interval(0.0,this.Rabs());
-	}        
+    /**
+     * Get the hull between two {@link Interval}
+     * @param B {@link Interval}
+     * @return {@link Interval} with the hull
+     */
+    public Interval Hull(Interval B){
+        double[] arr = new double[4];
+        arr[0] = inf;
+        arr[1] = sup;
+        arr[2] = B.getInf();
+        arr[3] = B.getSup();
+        Arrays.sort(arr);
+        return new Interval(arr[0],arr[3]);
     }
     /**
      * Clone one interval to one another
@@ -387,4 +409,5 @@ public class Interval extends Engine{
     public String toString(){
         return "[" + inf + "," + sup + "]";
     }
+
 }
