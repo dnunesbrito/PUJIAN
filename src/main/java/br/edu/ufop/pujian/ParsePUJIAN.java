@@ -194,6 +194,26 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
         new TokInterFun(this, "RAbs", 30).setLevel(10);
 
         /**
+         * Used to creates interval function ISqr
+         */
+        new TokInterFun(this, "ISqr", 30).setLevel(10);
+
+        /**
+         * Used to creates interval function to get natural logarithm of an interval
+         */
+        new TokInterFun(this, "Log", 30).setLevel(10);
+
+        /**
+         * Used to creates interval function to get logarithm of an interval in base 10
+         */
+        new TokInterFun(this, "Log10", 30).setLevel(10);
+
+        /**
+        * Used to creates interval function to get e^I
+        */
+        new TokInterFun(this, "Exp", 30).setLevel(10);
+
+        /**
          * Initialize an token == with left precedence equals to 40. As high left
          * precedence as operation is cast out first.i. e. "+" has lower precedence
          * level than "*". setleve Sets the recognition precedente, in this project
@@ -211,6 +231,7 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
         new TokInfix(this, "*", 60).setLevel(10);
         new TokInfix(this, "/", 60).setLevel(10);
         new TokInfix(this, "%", 60).setLevel(10);
+        new TokInfix(this, "&", 60).setLevel(10);
         new TokInfix(this, "^", 70, true).setLevel(10);
 
         new TokPrefixPostfix(this, "++", 80, 80).setLevel(10);
@@ -590,13 +611,13 @@ public class ParsePUJIAN extends InteractiveParser<Node>{
          * The function used to parse the token. This function isn't the parser. Parser is an object this function overrides a 
          * function to parse specifically this token
          * @param token The instance of the token founded by the parser
-         * @return A node with a TrigoFunc object type. This object is defined in the class {@link Engine}
+         * @return A node with a IntervalFunc object type. This object is defined in the class {@link Engine}
          * @throws SyntaxError 
          */
         @Override
         public Node parse(Token<Node> token) throws SyntaxError {
             Node node = expression(0);
-            return engine.new TrigoFunc(head, node);
+            return engine.new IntervalFunc(head, node);
         }
         
     }

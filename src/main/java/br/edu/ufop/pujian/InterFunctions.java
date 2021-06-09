@@ -23,6 +23,9 @@ package br.edu.ufop.pujian;
  */
 public class InterFunctions extends Interval{
     
+    private static final Interval PlusOne = new Interval(1.0);
+    private static final Interval Zero = new Interval(0.0);
+    private static final Interval Ln10 = new Interval(2.30258509299404568402);
     /**
      * Determines which quadrant the angle is.
      * @param x Angle to be evaluated
@@ -299,4 +302,185 @@ public class InterFunctions extends Interval{
         angle.set(Math.asin(tanvalue.getInf()),Math.asin(tanvalue.getSup()));
         return angle;
     }
+
+    /**
+     * Returns an interval of the absolute value.
+     * 
+     * @param A Operand to get absolute value.
+     * @return {@link Interval} The absolute value
+     */
+    public static Interval IAbs(Interval A){
+	if (A.getInf() > 0.0) return A;
+	else if (A.getSup() < 0.0) return A.INeg();
+	else {
+            return new Interval(0.0,A.RAbs());
+	}        
+    }
+
+    /**
+     * Gives the square of an interval
+     * @return {@link Interval} The square of an interval
+     */
+    public static Interval ISqr (Interval A)
+    /**********************************************************************
+     *  R = X^2
+     */
+    {
+        Interval t1 = IAbs(A);
+        return t1.mult(t1);
+    }
+
+    /**
+     * Get the power of an interval by a number
+     * @param A Interval to be powered.
+     * @param n Exponent to power
+     * @return {@link Interval} The result of operation
+     */
+    public static Interval IPowerN(Interval A,int n)
+    /**********************************************************************
+     *  R = X^n
+     */
+    {
+            int i, absn;
+            Interval y, z, xsqr;
+            y = new Interval();
+            z = new Interval();
+
+            absn = (n < 0) ? (-n) : n;
+            if (absn >= 2) {
+                    xsqr = ISqr(A);
+                    if (absn%2 != 0) y= xsqr.mult(A);
+                    else xsqr.clone(y);
+                    for (i = 3; i < absn; i += 2) {
+                            y.clone(z);
+                            y = z.mult(xsqr);
+                    }
+            }
+            else if (absn%2 != 0) y = A;
+            else PlusOne.clone(y);
+            if (n < 0) y = PlusOne.div(y);
+            return y;
+    }
+
+
+    /*
+    VOID BiasLog (BIASINTERVAL * const pR,
+							const BIASINTERVAL * const pX)
+    /**********************************************************************
+     *  R = Ln (X)
+     *
+    {
+            REAL y_inf, y_sup;
+
+            if (BiasInf (pX) <= 0.0)
+                    _BiasError ("Log argument out of range"); /* BiasHullR (pR, & BiasNaN); *
+            else {
+                    y_inf = log (BiasInf (pX));
+                    y_sup = log (BiasSup (pX));
+                    y_inf = RoundDown (y_inf);
+                    y_sup = RoundUp   (y_sup);
+                    BiasHullRR (pR, & y_inf, & y_sup);
+            }
+    }
+    */
+    
+    /**
+     * Get the natural logarithm of an Interval
+     * @param A {@link Interval} Interval to get log
+     * @return {@link Interval} with the result of logarithm function
+     */
+    public static Interval Log(Interval A){
+        if (A.getInf() <= 0)
+            throw new ArithmeticException("Log argument out of range");
+        else
+            return new Interval(Math.log(A.getInf()),Math.log(A.getSup()));
+    }
+ 
+    /*    VOID BiasLog10 (BIASINTERVAL * const pR,
+                                                                    const BIASINTERVAL * const pX)
+    /**********************************************************************
+     *  R = Log10 (X)
+     *
+    {
+            BIASINTERVAL t1;
+
+            if (BiasInf (pX) <= 0.0)
+                    _BiasError ("Log10 argument out of range"); /* BiasHullR (pR, & BiasNaN); *
+            else {
+                    BiasLog (& t1, pX);
+                    BiasDivII (pR, & t1, & BiasLn10Incl);
+            }
+    }
+    */
+    /**
+     * Get the logarithm with an Interval in the base 10
+     * @param A {@link Interval} Interval to get Log10
+     * @return {@link Interval} with result
+     */
+    public static Interval Log10(Interval A){
+        Interval result;
+        if (A.getInf() <= 0.0)
+            throw new ArithmeticException("Log10 argument out of range");
+        else{
+            result = Log(A);
+            result = result.div(A);
+        }
+        return result;
+    }
+    /*VOID BiasExp (BIASINTERVAL * const pR,
+                                                            const BIASINTERVAL * const pX)
+    /**********************************************************************
+     *  R = e^X
+     *
+    {
+            REAL y_inf, y_sup;
+
+            y_inf = exp (BiasInf (pX));
+            y_sup = exp (BiasSup (pX));
+            y_inf = RoundDown (y_inf);
+            y_sup = RoundUp   (y_sup);
+            if (y_inf < 0.0) y_inf = 0.0;
+            BiasHullRR (pR, & y_inf, & y_sup);
+    }*/
+    /**
+     * Get e^I
+     * @param A {@link Interval} of the exponent
+     * @return {@link Interval} with the result of the operation
+     */
+    public static Interval Exp(Interval A){
+        Interval result = new Interval(Math.exp(A.getInf()),Math.exp(A.getSup()));
+        if (result.getInf() < 0.0) result.set(0.0, result.getSup());
+        return result;
+    }
+    public static Interval IPowerI (Interval pX,Interval pY)
+    /**********************************************************************
+     *  R = X^Y
+     */
+    {
+      double x_inf = pX.getInf();
+      double x_sup;
+      Interval t1, t2 = new Interval();
+      Interval result = null;
+
+        if (x_inf < 0.0) throw new ArithmeticException("Power: Base is negative");
+        if (x_inf == 0.0) {
+            if (pY.getInf() <= 0.0) {
+                throw new ArithmeticException("Power: Negative or zero exponent with zero base");
+            } else if ((x_sup = pX.getSup()) == 0.0) {
+                return Zero;
+            } else {
+                t2.set(x_sup, x_sup);
+                t1 = Log (t2);
+            }
+        }else t1 = Log(pX);
+        t2 = t1.mult(pY);//BiasMulII (& t2, & t1, pY);
+        if (x_inf == 0.0) {
+                t1 = Exp (t2);
+                result = t1.Hull(Zero);//BiasHullRI (pR, & Zero, & t1);
+        }
+        else result = Exp(t2);//BiasExp (pR, & t2);
+        return result;
+            
+    }
+
 }

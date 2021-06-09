@@ -23,8 +23,8 @@ public class testpujian {
             tree = parser.ReadNodesFromFile("StringPrograma.txt");
             /*System.out.println("cos(3.5*PI/2): " + Math.cos(3.5*Math.PI/2));
             System.out.println("cos(3.5*PI/2); " + Math.cos(3.5*Math.PI/2));*/
-            engine.printContextVariable("C");
-            engine.printContextVariable("D");
+            engine.printContextVariable("A");
+            engine.printContextVariable("E");
         } catch (SemanticError ex) {
             Logger.getLogger(testpujian.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(0);

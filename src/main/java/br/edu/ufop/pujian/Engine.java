@@ -426,7 +426,25 @@ public class Engine {
                     return new Inter(val.mult(that.val));
                 case "^":
                     it = (Num) other;
-                    return new Inter(val.pow(it.val));
+                    return new Inter(InterFunctions.IPowerN(val, (int) Math.round(it.val)));
+                case "&":
+                    Class<?> enclosingClass = other.getClass();
+                    if (enclosingClass != null) {
+                      String classSimpleName = enclosingClass.getSimpleName();
+                      if("Num".equals(classSimpleName)){
+                          it = (Num) other;
+                          return new Inter(val.Hull(it.val));
+                      }
+                      if("Inter".equals(classSimpleName)){
+                          that = (Inter) other;
+                          Interval b = val.Hull(that.val);
+                          Inter c = new Inter(b);
+                          return c;
+                      }
+                    } else {
+                      System.out.println(getClass().getName());
+                      return null;
+                    }
                 default:
                     return super.doBinOp(op, other);
             }
@@ -732,7 +750,7 @@ public class Engine {
                 }                    
             }
             Node node = context.get(this.head);
-            if (node instanceof TrigoFunc){
+            if (node instanceof IntervalFunc){
                 System.out.println(this.head);
             }
             if (!(node instanceof Func))
@@ -796,11 +814,11 @@ public class Engine {
         }
     }
     
-    public class TrigoFunc extends Node {
+    public class IntervalFunc extends Node {
         protected String head;
         protected Node arg;
         
-        public TrigoFunc(String head, Node args) {
+        public IntervalFunc(String head, Node args) {
             this.head = head;
             this.arg = args;
         }
@@ -817,10 +835,22 @@ public class Engine {
                     return new Inter(InterFunctions.Sin(a.val));
                 case "IAbs":
                     a = (Inter) arg.eval();
-                    return new Inter(a.val.Iabs());
+                    return new Inter(InterFunctions.IAbs(a.val));
                 case "RAbs":
                     a = (Inter) arg.eval();
-                    return new Num(a.val.Rabs());
+                    return new Num(a.val.RAbs());
+                case "ISqr":
+                    a = (Inter) arg.eval();
+                    return new Inter(InterFunctions.ISqr(a.val));
+                case "Log":
+                    a = (Inter) arg.eval();
+                    return new Inter(InterFunctions.Log(a.val));
+                case "Log10":
+                    a = (Inter) arg.eval();
+                    return new Inter(InterFunctions.Log10(a.val));
+                case "Exp":
+                    a = (Inter) arg.eval();
+                    return new Inter(InterFunctions.Exp(a.val));
             }
             return null;
         }
