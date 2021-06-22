@@ -425,8 +425,14 @@ public class Engine {
                     that = (Inter) other;
                     return new Inter(val.mult(that.val));
                 case "^":
-                    it = (Num) other;
-                    return new Inter(InterFunctions.IPowerN(val, (int) Math.round(it.val)));
+                    if(other instanceof Num){
+                        it = (Num) other;
+                        return new Inter(InterFunctions.IPowerN(val, (int) Math.round(it.val)));
+                    }
+                    else if(other instanceof Inter){
+                        that = (Inter) other;
+                        return new Inter(InterFunctions.IPowerI(val, that.val));
+                    }
                 case "&":
                     Class<?> enclosingClass = other.getClass();
                     if (enclosingClass != null) {
@@ -826,30 +832,39 @@ public class Engine {
         @Override
         public Node eval() throws SemanticError {
             Inter a;
+            a = (Inter) arg.eval();
             switch (head){
                 case "Cos":
-                    a = (Inter) arg.eval();
                     return new Inter(InterFunctions.Cos(a.val));
                 case "Sin":
-                    a = (Inter) arg.eval();
                     return new Inter(InterFunctions.Sin(a.val));
+                case "Cot":
+                    return new Inter(InterFunctions.Cos(a.val));
+                case "ASin":
+                    return new Inter(InterFunctions.ASin(a.val));
+                case "ACos":
+                    return new Inter(InterFunctions.ACos(a.val));
+                case "ATan":
+                    return new Inter(InterFunctions.ATan(a.val));
+                case "Sinh":
+                    return new Inter(InterFunctions.Sinh(a.val));
+                case "Cosh":
+                    return new Inter(InterFunctions.Cosh(a.val));
+                case "Tanh":
+                    return new Inter(InterFunctions.Tanh(a.val));
+                case "Coth":
+                    return new Inter(InterFunctions.Coth(a.val));
                 case "IAbs":
-                    a = (Inter) arg.eval();
                     return new Inter(InterFunctions.IAbs(a.val));
                 case "RAbs":
-                    a = (Inter) arg.eval();
                     return new Num(a.val.RAbs());
                 case "ISqr":
-                    a = (Inter) arg.eval();
                     return new Inter(InterFunctions.ISqr(a.val));
                 case "Log":
-                    a = (Inter) arg.eval();
                     return new Inter(InterFunctions.Log(a.val));
                 case "Log10":
-                    a = (Inter) arg.eval();
                     return new Inter(InterFunctions.Log10(a.val));
                 case "Exp":
-                    a = (Inter) arg.eval();
                     return new Inter(InterFunctions.Exp(a.val));
             }
             return null;

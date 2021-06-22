@@ -24,6 +24,7 @@ package br.edu.ufop.pujian;
 public class InterFunctions extends Interval{
     
     private static final Interval PlusOne = new Interval(1.0);
+    private static final Interval PlusTwo = new Interval(2.0);
     private static final Interval Zero = new Interval(0.0);
     private static final Interval Ln10 = new Interval(2.30258509299404568402);
     /**
@@ -174,6 +175,7 @@ public class InterFunctions extends Interval{
         cosResult.set(Math.sin(angle.getInf()),Math.sin(angle.getSup()));
         return cosResult;
     }
+    
     /**
      * Function used to compute the cossine of an interval angle
      * @param angle Interval angle to compute de sine.
@@ -186,6 +188,7 @@ public class InterFunctions extends Interval{
         angle_added_pi_2 = angle_added_pi_2.add(angle);
         return Sin(angle_added_pi_2);
     }
+    
     /**
      * Function used to compute the cossine of an interval angle
      * @param angle Interval angle to compute de sine.
@@ -280,29 +283,129 @@ public class InterFunctions extends Interval{
         return angle;
     }
     /**
-     * Function used to compute the cotangent of an interval value
-     * @param tanvalue Interval with the value to compute cotangent.
-     * @return The cotangent of the interval angle.
+     * Function used to compute the arc sine of an interval value
+     * @param sinvalue Interval with the value to compute arc sine.
+     * @return The arc sine of the interval angle.
      * @throws ArithmeticException 
      */
-    public static Interval Asin(Interval tanvalue) throws ArithmeticException{
+    public static Interval ASin(Interval sinvalue) throws ArithmeticException{
 	/*REAL x_inf, x_sup;
 
 	x_inf = BiasInf (pX); x_sup = BiasSup (pX);
 	if ((x_inf < -1.0) || (x_sup > 1.0))
 		_BiasError ("ArcSin argument out of range");
-	x_inf = Asin (x_inf);
-	x_sup = Asin (x_sup);
+	x_inf = ASin (x_inf);
+	x_sup = ASin (x_sup);
 	x_inf = RoundDown (x_inf);
 	x_sup = RoundUp   (x_sup);
 	BiasHullRR (pR, & x_inf, & x_sup);*/
-        Interval angle = new Interval();
-        if(tanvalue.getInf() < -1.0 || tanvalue.getSup() > 1.0)
+        if(sinvalue.getInf() < -1.0 || sinvalue.getSup() > 1.0)
             throw new ArithmeticException("ArcSin argument out of range");
-        angle.set(Math.asin(tanvalue.getInf()),Math.asin(tanvalue.getSup()));
-        return angle;
+        return new Interval(Math.asin(sinvalue.getInf()),Math.asin(sinvalue.getSup()));
+    }
+    /**
+     * Function used to compute the arc cossine of an interval value
+     * @param cosvalue Interval with the value to compute arc cossine.
+     * @return The arc cossine of the interval angle.
+     * @throws ArithmeticException 
+     */
+    public static Interval ACos(Interval cosvalue) throws ArithmeticException {
+	if ((cosvalue.getInf() < -1.0) || (cosvalue.getSup() > 1.0))
+		throw new ArithmeticException("ArcCos argument out of range");
+        return new Interval(Math.acos(cosvalue.getSup()),Math.acos(cosvalue.getInf()));
     }
 
+    /**
+     * Function used to compute the arc tangent of an interval value
+     * @param tanvalue Interval with the value to compute arc cossine.
+     * @return The arc cossine of the interval angle.
+     * @throws ArithmeticException 
+     */
+    public static Interval ATan(Interval tanvalue) throws ArithmeticException {
+	if ((tanvalue.getInf() < -1.0) || (tanvalue.getSup() > 1.0))
+		throw new ArithmeticException("ArcCos argument out of range");
+        return new Interval(Math.atan(tanvalue.getSup()),Math.atan(tanvalue.getInf()));
+    }
+    /**
+     * Get the hyperbolic sine of a function
+     * @param angle Angle to get the hyperbolic sine
+     * @return The hyperbolic sine
+     * @throws ArithmeticException 
+     */
+    public static Interval Sinh(Interval angle) throws ArithmeticException {
+        Interval t1, t2, t3;
+	//BiasExp (& t1, pX);
+        t1 = Exp(angle);
+	//BiasDivRI (& t2, & PlusOne, & t1);
+        t2 = PlusOne.div(t1);
+	//BiasSubII (& t3, & t1, & t2);
+        t3 = t1.sub(t2);
+	//BiasDivIR (pR, & t3, & PlusTwo);
+        return t3.div(PlusTwo);
+    }
+    
+    /**
+     * Get the hyperbolic cossine of a function
+     * @param angle Angle to get the hyperbolic cossine
+     * @return The hyperbolic cossine
+     * @throws ArithmeticException 
+     */
+    public static Interval Cosh(Interval angle) throws ArithmeticException {
+        Interval t1, t2, t3;
+	//BiasExp (& t1, pX);
+        t1 = Exp(angle);
+	//BiasDivRI (& t2, & PlusOne, & t1);
+        t2 = PlusOne.div(t1);
+	//BiasAddII (& t3, & t1, & t2);
+        t3 = t1.add(t2);
+	//BiasDivIR (pR, & t3, & PlusTwo);
+        return t3.div(PlusTwo);
+
+    }
+    
+    /**
+     * Get the hyperbolic tangent of a function
+     * @param angle Angle to get the hyperbolic tangent
+     * @return The hyperbolic cossine
+     * @throws ArithmeticException 
+     */
+    public static Interval Tanh(Interval angle) throws ArithmeticException {
+	Interval t1, t2, t3, t4;
+
+	//BiasExp (& t1, pX);
+        t1 = Exp(angle);
+	//BiasDivRI (& t2, & PlusOne, & t1);
+        t2 = PlusOne.div(t1);
+	//BiasAddII (& t3, & t1, & t2);
+        t3 = t1.add(t2);
+	//BiasSubII (& t4, & t1, & t2);
+        t4 = t1.sub(t2);
+	//BiasDivII (pR, & t4, & t3);
+        return t4.div(t3);
+    }
+
+    /**
+     * Get the hyperbolic tangent of a function
+     * @param angle Angle to get the hyperbolic tangent
+     * @return The hyperbolic cossine
+     * @throws ArithmeticException 
+     */
+    public static Interval Coth(Interval angle) throws ArithmeticException {
+	Interval t1, t2, t3, t4;
+
+	//BiasExp (& t1, pX);
+        t1 = Exp(angle);
+	//BiasDivRI (& t2, & PlusOne, & t1);
+        t2 = PlusOne.div(t1);
+	//BiasAddII (& t3, & t1, & t2);
+        t3 = t1.add(t2);
+	//BiasSubII (& t4, & t1, & t2);
+        t4 = t1.sub(t2);
+	//BiasDivII (pR, & t4, & t3);
+        return t3.div(t4);
+    }
+
+    //IMPLEMENTS THE ARCSINH 
     /**
      * Returns an interval of the absolute value.
      * 
@@ -319,6 +422,7 @@ public class InterFunctions extends Interval{
 
     /**
      * Gives the square of an interval
+     * @param A Value to get the square value
      * @return {@link Interval} The square of an interval
      */
     public static Interval ISqr (Interval A)
@@ -452,6 +556,12 @@ public class InterFunctions extends Interval{
         if (result.getInf() < 0.0) result.set(0.0, result.getSup());
         return result;
     }
+    /**
+     * Get the power of an interval with the exponent as an interval too.
+     * @param pX Interval Base of the exponential function
+     * @param pY Interval exponent
+     * @return 
+     */
     public static Interval IPowerI (Interval pX,Interval pY)
     /**********************************************************************
      *  R = X^Y
